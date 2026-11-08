@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Navier–Stokes Blueprint</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,600&family=Public+Sans:wght@400;600&display=swap">
+<style>
+:root { --paper:#f5f7f9; --sheet:#fff; --ink:#17212b; --muted:#5a6876; --rule:#d6dde4; --accent:#1f5fa8;
+  --display:"Newsreader",Georgia,serif; --body:"Public Sans",system-ui,sans-serif; color-scheme:light }
+@media (prefers-color-scheme: dark) { :root { --paper:#0f1720; --sheet:#16212c; --ink:#e3e9ef; --muted:#93a2b1; --rule:#2a3846; --accent:#7fb2ec; color-scheme:dark } }
+body { margin:0; background:var(--paper); color:var(--ink); font:16px/1.55 var(--body) }
+main { max-width:760px; margin:0 auto; padding:48px max(16px, env(safe-area-inset-left, 0px)) 64px; display:grid; gap:22px }
+h1 { font:600 clamp(30px,6vw,42px)/1.1 var(--display); margin:0 }
+p { margin:0; max-width:65ch }
+.muted { color:var(--muted) }
+.pages { display:grid; gap:12px }
+a.page { display:grid; gap:4px; padding:16px 18px; background:var(--sheet); border:1px solid var(--rule); border-radius:6px; color:inherit; text-decoration:none }
+a.page:hover, a.page:focus-visible { border-color:var(--accent) }
+a.page b { font:600 20px/1.2 var(--display); color:var(--accent) }
+a { color:var(--accent) }
+</style>
+</head>
+<body>
+<main>
+  <h1>Navier–Stokes Blueprint</h1>
+  <p>In 2026 OpenAI published a proof that the Navier–Stokes equations can blow up in finite time, together with a Lean formalization of about 230,000 lines. These pages are reading aids for that formalization: they map how the proof is put together, so a person can find its main ideas before reading any Lean.</p>
+  <div class="pages">
+    <a class="page" href="blueprint.html"><b>Blueprint</b><span>75 key definitions and theorems, from the Clay Millennium statements down to the base flow, each with a one-line plain-language statement and its dependencies.</span></a>
+    <a class="page" href="atlas.html"><b>Proof Atlas</b><span>The full dominator tree of the proof: which parts of the code exclusively support which results, organized by section of the paper.</span></a>
+  </div>
+  <p class="muted">The plain-language statements are AI-written paraphrases of the Lean code, not verified mathematics. Source, data and caveats: <a href="https://github.com/jae-63/navier-stokes-blueprint">github.com/jae-63/navier-stokes-blueprint</a>.</p>
+</main>
+</body>
+</html>

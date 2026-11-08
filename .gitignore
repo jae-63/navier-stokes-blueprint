@@ -1,0 +1,7 @@
+# Large generated data: regenerate from data/ns-decls.json.xz (see README)
+data/ns-decls.json
+data/ns-cone.json
+data/blueprint.json
+reference/
+__pycache__/
+.DS_Store

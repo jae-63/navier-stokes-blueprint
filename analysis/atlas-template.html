@@ -1,0 +1,507 @@
+<meta charset="utf-8">
+<title>Navier–Stokes Proof Atlas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a paper-like reading column for the argument, then a two-pane atlas (dominator tree | declaration sheet). */
+:root {
+  --bg: #f5f6f8;
+  --surface: #ffffff;
+  --ink: #14171c;
+  --ink-2: #4a4f59;
+  --ink-3: #737985;
+  --rule: #dde0e6;
+  --hover: #eceff4;
+  --select: #e3e9f3;
+  --focus: #2a5bb8;
+  --code-bg: #f0f2f5;
+  --s4: #2a78d6; --s5: #eb6834; --s6: #1baf7a; --s7: #eda100;
+  --s8: #e87ba4; --s9: #008300; --s10: #6250d6; --sx: #a3a8b2;
+  --serif: "Source Serif 4", "Iowan Old Style", Georgia, serif;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121418; --surface: #1a1d22; --ink: #eceef2; --ink-2: #b6bbc5; --ink-3: #8b919c;
+    --rule: #2c3038; --hover: #22262d; --select: #263043; --focus: #7ea6ef; --code-bg: #20242a;
+    --s4: #3987e5; --s5: #d95926; --s6: #199e70; --s7: #c98500;
+    --s8: #d55181; --s9: #008300; --s10: #9085e9; --sx: #5d636d;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121418; --surface: #1a1d22; --ink: #eceef2; --ink-2: #b6bbc5; --ink-3: #8b919c;
+  --rule: #2c3038; --hover: #22262d; --select: #263043; --focus: #7ea6ef; --code-bg: #20242a;
+  --s4: #3987e5; --s5: #d95926; --s6: #199e70; --s7: #c98500;
+  --s8: #d55181; --s9: #008300; --s10: #9085e9; --sx: #5d636d;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 14px; line-height: 1.5; }
+.wrap { max-width: 2400px; margin: 0 auto; padding-inline: 20px; padding-block: 28px 56px; display: grid; gap: 28px; }
+a { color: inherit; text-decoration-color: var(--ink-3); text-underline-offset: 2px; }
+a:hover { text-decoration-color: var(--ink); }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 3px; }
+code, .mono { font-family: var(--mono); font-size: 0.86em; }
+code { background: var(--code-bg); padding: 0.05em 0.3em; border-radius: 3px; }
+
+header { display: grid; gap: 8px; }
+.eyebrow { font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); font-weight: 500; }
+h1 { font-family: var(--serif); font-weight: 600; font-size: clamp(28px, 4vw, 40px); line-height: 1.1; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+.facts { color: var(--ink-2); font-size: 13.5px; display: flex; flex-wrap: wrap; gap: 4px 18px; font-variant-numeric: tabular-nums; }
+.facts b { color: var(--ink); font-weight: 600; }
+
+.argument { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 28px; align-items: start; max-width: 1240px; }
+.sections { max-width: 1240px; }
+.prose { font-family: var(--serif); font-size: 16.5px; line-height: 1.6; max-width: 64ch; display: grid; gap: 12px; }
+.prose p { margin: 0; }
+.prose .lede { font-size: 18px; }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; border-top: 1px solid var(--rule); }
+.steps li { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto; gap: 4px 12px; padding: 12px 0; border-bottom: 1px solid var(--rule); align-items: baseline; }
+.steps .n { font-family: var(--serif); font-size: 18px; color: var(--ink-3); }
+.steps h3 { margin: 0; font-size: 14px; font-weight: 600; }
+.steps p { margin: 2px 0 0; color: var(--ink-2); font-size: 13.5px; grid-column: 2 / 4; }
+.steps .share { font-variant-numeric: tabular-nums; color: var(--ink-2); font-size: 13px; }
+.steps button.jump { all: unset; cursor: pointer; font-family: var(--mono); font-size: 12px; color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 2px; overflow-wrap: anywhere; }
+.steps button.jump:hover { color: var(--ink); text-decoration-color: var(--ink-3); }
+
+.sections { display: grid; gap: 10px; }
+.sections h2, .atlas h2 { font-family: var(--serif); font-weight: 600; font-size: 20px; margin: 0; }
+.sections .sub { color: var(--ink-2); font-size: 13px; margin: 0; max-width: 90ch; }
+.bar { display: flex; gap: 2px; height: 22px; width: 100%; }
+.bar button { all: unset; height: 100%; cursor: pointer; min-width: 3px; }
+.bar button:first-child { border-radius: 4px 0 0 4px; }
+.bar button:last-child { border-radius: 0 4px 4px 0; }
+.bar button.dim, .legend button.dim { opacity: 0.28; }
+.bar button:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.legend { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 2px 16px; }
+.legend button { all: unset; cursor: pointer; display: grid; grid-template-columns: 10px minmax(0, 1fr) auto; gap: 8px; align-items: center; padding: 4px 6px; border-radius: 4px; font-size: 13px; }
+.legend button:hover { background: var(--hover); }
+.legend button[aria-pressed="true"] { background: var(--select); }
+.legend .pct { font-variant-numeric: tabular-nums; color: var(--ink-2); }
+.chip { width: 10px; height: 10px; border-radius: 2px; display: inline-block; flex: none; }
+.filter-note { font-size: 12.5px; color: var(--ink-2); min-height: 1.2em; }
+.filter-note button { all: unset; cursor: pointer; text-decoration: underline; }
+
+.atlas { display: grid; gap: 12px; }
+.atlas-head { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: end; justify-content: space-between; }
+.atlas-head p { margin: 2px 0 0; color: var(--ink-2); font-size: 13px; max-width: 80ch; }
+.search { position: relative; width: min(100%, 340px); }
+.search input { width: 100%; font: inherit; padding: 7px 10px; border: 1px solid var(--rule); border-radius: 6px; background: var(--surface); color: var(--ink); }
+.search input::placeholder { color: var(--ink-3); }
+.results { position: absolute; z-index: 5; top: calc(100% + 4px); left: 0; right: 0; background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; max-height: 320px; overflow-y: auto; box-shadow: 0 8px 24px rgb(0 0 0 / 0.12); }
+.results button { all: unset; box-sizing: border-box; display: grid; grid-template-columns: 10px minmax(0, 1fr); gap: 8px; align-items: center; width: 100%; padding: 6px 10px; cursor: pointer; font-size: 12.5px; }
+.results button:hover, .results button.active { background: var(--hover); }
+.results .rname { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--mono); font-size: 12px; }
+.results .empty { padding: 8px 10px; color: var(--ink-3); font-size: 12.5px; }
+
+.panes { display: grid; grid-template-columns: minmax(260px, var(--split, 42%)) 16px minmax(0, 1fr); align-items: start; }
+.splitter { align-self: stretch; cursor: col-resize; display: grid; place-items: center; touch-action: none; border-radius: 4px; }
+.splitter::before { content: ""; width: 2px; height: 48px; border-radius: 1px; background: var(--rule); }
+.splitter:hover::before, .splitter.dragging::before, .splitter:focus-visible::before { background: var(--ink-3); }
+.panes.dragging { user-select: none; }
+.tree { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 6px 0; max-height: 78vh; overflow: auto; }
+.row { display: grid; grid-template-columns: var(--indent, 0px) 16px 8px minmax(0, 1fr) 64px 46px; gap: 0 8px; align-items: center; padding: 3px 10px; cursor: pointer; min-width: 0; }
+.row:hover { background: var(--hover); }
+.row.sel { background: var(--select); }
+.row.dim { opacity: 0.35; }
+.row .caret { width: 16px; height: 16px; display: grid; place-items: center; color: var(--ink-3); font-size: 10px; border-radius: 3px; }
+.row .caret:hover { background: var(--rule); color: var(--ink); }
+.row .chip { width: 8px; height: 8px; }
+.row .label { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--mono); font-size: 12px; }
+.row .label .ns { color: var(--ink-3); }
+.row .meter { height: 4px; background: var(--rule); border-radius: 2px; overflow: hidden; }
+.row .meter span { display: block; height: 100%; background: var(--ink-2); border-radius: 2px; }
+.row .w { text-align: right; font-variant-numeric: tabular-nums; color: var(--ink-2); font-size: 12px; }
+.row.more { cursor: default; color: var(--ink-3); font-size: 12px; font-style: italic; }
+.row.more:hover { background: none; }
+
+.sheet { background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 18px 20px; display: grid; gap: 14px; position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); max-height: calc(100vh - 24px); overflow: auto; min-width: 0; }
+.crumbs { display: flex; flex-wrap: wrap; gap: 2px 4px; font-size: 12px; color: var(--ink-3); }
+.crumbs button { all: unset; cursor: pointer; font-family: var(--mono); font-size: 11.5px; color: var(--ink-2); }
+.crumbs button:hover { text-decoration: underline; }
+.sheet h3 { margin: 0; font-family: var(--mono); font-size: 15px; font-weight: 500; overflow-wrap: anywhere; line-height: 1.35; }
+.sheet h3 .ns { color: var(--ink-3); }
+.pills { display: flex; flex-wrap: wrap; gap: 6px; }
+.pill { display: inline-flex; gap: 6px; align-items: center; border: 1px solid var(--rule); border-radius: 999px; padding: 2px 9px; font-size: 12px; color: var(--ink-2); }
+.pill a { color: var(--ink-2); }
+.metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; border-block: 1px solid var(--rule); padding-block: 10px; }
+.metrics div { display: grid; gap: 1px; min-width: 0; }
+.metrics b { font-size: 17px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.metrics span { font-size: 11.5px; color: var(--ink-3); line-height: 1.3; }
+.block { display: grid; gap: 6px; min-width: 0; }
+.block h4 { margin: 0; font-size: 11.5px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-3); font-weight: 500; }
+.doc { font-family: var(--serif); font-size: 15px; line-height: 1.55; margin: 0; }
+.doc.none { font-family: var(--sans); font-size: 13px; color: var(--ink-3); font-style: italic; }
+.module-doc { font-size: 13px; color: var(--ink-2); margin: 0; }
+.module-doc b { color: var(--ink); font-weight: 500; }
+pre.sig { margin: 0; background: var(--code-bg); border-radius: 6px; padding: 10px 12px; font-family: var(--mono); font-size: 12px; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; }
+.block-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.toggle { display: inline-flex; gap: 6px; align-items: center; font-size: 12px; color: var(--ink-2); cursor: pointer; }
+.toggle input { margin: 0; accent-color: var(--focus); }
+.links { display: flex; flex-direction: column; gap: 2px; }
+.links button { all: unset; cursor: pointer; display: grid; grid-template-columns: 8px minmax(0, 1fr) auto; gap: 8px; align-items: center; padding: 3px 6px; border-radius: 4px; }
+.links button:hover { background: var(--hover); }
+.links .chip { width: 8px; height: 8px; }
+.links .lname { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--mono); font-size: 12px; }
+.links .lw { font-size: 11.5px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.note { font-size: 12px; color: var(--ink-3); margin: 0; }
+.source { font-size: 13px; }
+
+footer { color: var(--ink-3); font-size: 12.5px; border-top: 1px solid var(--rule); padding-top: 14px; display: grid; gap: 4px; max-width: 100ch; }
+
+@media (max-width: 860px) {
+  .argument, .panes { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .splitter { display: none; }
+  .tree { max-height: 60vh; }
+  .sheet { position: static; max-height: none; }
+  .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .row { grid-template-columns: var(--indent, 0px) 16px 8px minmax(0, 1fr) 40px; }
+  .row .meter { display: none; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .row, .legend button, .bar button { transition: background-color 120ms ease, opacity 160ms ease; }
+}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Lean 4 formalization · openai/NavierStokesAndEuler</div>
+    <h1>Navier–Stokes Proof Atlas</h1>
+    <div class="facts" id="facts"></div>
+  </header>
+
+  <section class="argument" aria-labelledby="arg-h">
+    <div class="prose">
+      <h2 id="arg-h" class="eyebrow" style="font-family: var(--sans); margin: 0;">The argument</h2>
+      <p class="lede">Start a fluid at rest, push it with one smooth force that is compactly supported in space and time, and the velocity becomes unbounded as <i>t</i> → 1 while the energy stays bounded. So no global smooth solution with bounded energy exists, which is Clay's alternative (C).</p>
+      <p>With a force allowed, any velocity field solves Navier–Stokes if you define the force as whatever the equation leaves over. The hard part is keeping that leftover <i>smooth through and past t = 1</i> while the velocity blows up. A collapsing vortex supplies the blowup. Oscillatory pulses at its edge cancel the singular part of the residual through their averaged momentum flux. Repeated correction cycles clean up the rest.</p>
+      <p>In the dependency graph, that construction is about 95% of the code. The breakdown argument itself is small.</p>
+    </div>
+    <ol class="steps" id="steps"></ol>
+  </section>
+
+  <section class="sections" aria-labelledby="sec-h">
+    <h2 id="sec-h">Where the code lives, by paper section</h2>
+    <p class="sub">Share of the source lines in the main theorems' dependency cone. Section labels are inferred from module names and docs: the Lean comments cite an earlier draft's numbering. Select a section to highlight it in the atlas.</p>
+    <div class="bar" id="bar" role="group" aria-label="Share of lines by paper section"></div>
+    <div class="legend" id="legend"></div>
+    <div class="filter-note" id="filter-note" aria-live="polite"></div>
+  </section>
+
+  <section class="atlas" aria-labelledby="atlas-h">
+    <div class="atlas-head">
+      <div>
+        <h2 id="atlas-h">Dominator tree</h2>
+        <p>A declaration's children are what it alone gives access to: every dependency chain from the main theorems down to a child passes through its parent. Bars show the share of the cone's source lines in each subtree. Declarations owning fewer than <span id="minw"></span> lines are folded into summary rows.</p>
+      </div>
+      <div class="search">
+        <label for="q" class="eyebrow" style="display:block;margin-bottom:4px;">Find a declaration</label>
+        <input id="q" type="search" placeholder="e.g. uniqueness, pulse, cone" autocomplete="off" aria-controls="results">
+        <div class="results" id="results" role="listbox" hidden></div>
+      </div>
+    </div>
+    <div class="panes" id="panes">
+      <div class="tree" id="tree" role="tree" aria-label="Dominator tree of the proof"></div>
+      <div class="splitter" id="splitter" role="separator" aria-orientation="vertical" aria-label="Resize panes" tabindex="0"></div>
+      <aside class="sheet" id="sheet" aria-live="polite"></aside>
+    </div>
+  </section>
+
+  <footer>
+    <div>Built from the compiled Lean environment: declarations and dependencies were extracted with an adaptation of uda-lab/leray-hopf's <code>ExtractNotes</code>, following compiler-generated helpers back to real lemmas. Source links point to commit <span class="mono" id="commit"></span>.</div>
+    <div>Paper: <a href="https://cdn.openai.com/pdf/32d9f210-8b73-45e0-91bc-82a30aef8a9a/navier-stokes.pdf" target="_blank" rel="noopener">Finite time blowup for Navier–Stokes</a> (OpenAI). The formalization's own description is in its <code>formalization.yaml</code>; this page is an unofficial reading aid.</div>
+  </footer>
+</div>
+
+<script>
+const D = /*__DATA__*/null;
+const PAPER = "https://cdn.openai.com/pdf/32d9f210-8b73-45e0-91bc-82a30aef8a9a/navier-stokes.pdf";
+const REPO = "https://github.com/openai/NavierStokesAndEuler/blob/" + D.commit + "/";
+const N = D.nodes, M = D.modules;
+const F = { name: 0, kind: 1, mod: 2, start: 3, end: 4, w: 5, size: 6, fanIn: 7, parent: 8, doc: 9, sig: 10, uses: 11, hidL: 12, hidN: 13, depsAll: 14, own: 15 };
+const SEC = Object.fromEntries(D.sections.map(([k, label, page]) => [k, { label, page }]));
+const load = k => { try { return localStorage.getItem(k); } catch { return null; } };
+const store = (k, v) => { try { localStorage.setItem(k, v); } catch {} };
+let shortNames = load("atlas.shortNames") === "1";
+// Drop namespace prefixes (`NavierStokesR3.ProblemStatement.VelocityField` → `VelocityField`).
+const stripNamespaces = s => s.replace(/(?<![\w.'])(?:[A-Za-z_][\w']*\.)+(?=[A-Za-z_])/g, "");
+const fmt = n => n.toLocaleString("en-US");
+const pct = (w, d = 1) => (w * 100 / D.coneLines).toFixed(d) + "%";
+const secOf = i => M[N[i][F.mod]][1];
+const color = k => `var(--${k})`;
+const el = (tag, attrs = {}, ...kids) => {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) {
+    if (k === "class") e.className = v; else if (k === "text") e.textContent = v;
+    else if (k.startsWith("on")) e.addEventListener(k.slice(2), v); else if (v !== false && v != null) e.setAttribute(k, v);
+  }
+  for (const c of kids) if (c != null) e.append(c);
+  return e;
+};
+
+const children = N.map(() => []), roots = [];
+N.forEach((n, i) => (n[F.parent] < 0 ? roots : children[n[F.parent]]).push(i));
+const usedBy = N.map(() => []);
+N.forEach((n, i) => n[F.uses].forEach(j => usedBy[j].push(i)));
+const byName = new Map(N.map((n, i) => [n[F.name], i]));
+
+function splitName(name) {
+  const parts = name.split(".");
+  if (parts.length <= 2) return ["", name];
+  return [parts.slice(0, -2).join(".") + ".", parts.slice(-2).join(".")];
+}
+function nameNode(name, cls) {
+  const [ns, tail] = splitName(name);
+  return el("span", { class: cls, title: name }, el("span", { class: "ns", text: ns }), tail);
+}
+function inlineMd(text) {
+  const frag = document.createDocumentFragment();
+  text.split(/(`[^`]+`)/).forEach(part => {
+    if (part.startsWith("`") && part.endsWith("`") && part.length > 1) frag.append(el("code", { text: part.slice(1, -1) }));
+    else frag.append(part);
+  });
+  return frag;
+}
+
+// Header facts and step list
+document.getElementById("facts").append(
+  el("span", {}, el("b", { text: fmt(D.coneDecls) }), " declarations in the cone of the main theorems"),
+  el("span", {}, el("b", { text: fmt(D.coneLines) }), " lines of Lean"),
+  el("span", {}, el("b", { text: fmt(D.totalDecls) }), " declarations imported"),
+);
+document.getElementById("minw").textContent = fmt(D.minWeight);
+document.getElementById("commit").textContent = D.commit.slice(0, 7);
+
+const STEPS = [
+  ["Reduce to viscosity 1", "Rescaling space, time and force turns one construction at ν = 1 into one for every ν > 0. Zero initial velocity satisfies Clay's conditions directly.", "NavierStokes.Comparator.navier_stokes_breakdown_R3"],
+  ["Build a blowup candidate", "Velocity and pressure that are smooth before t = 1, supported in a fixed compact set and at rest initially, with bounded energy but unbounded speed. They solve Navier–Stokes exactly with a force that is smooth everywhere.", "NavierStokesR3.ActualCandidate.selected_candidate_one_with_initial_rest"],
+  ["Uniqueness forces breakdown", "A global smooth finite-energy solution with the same force and zero data would coincide with the candidate before t = 1 by classical energy uniqueness, so it would blow up too.", "NavierStokesR3.ProblemStatement.CandidateProperties.no_global_solution_one"],
+];
+const stepsEl = document.getElementById("steps");
+STEPS.forEach(([h, p, target], k) => {
+  const i = byName.get(target);
+  stepsEl.append(el("li", {},
+    el("span", { class: "n", text: String(k + 1) }),
+    el("h3", { text: h }),
+    el("span", { class: "share", text: i != null && k > 0 ? pct(N[i][F.w]) + " of lines" : "" }),
+    el("p", {}, p, " ", i != null ? el("button", { class: "jump", text: "Open in atlas", onclick: () => select(i, true) }) : null),
+  ));
+});
+
+// Section bar + legend
+let filter = null;
+const barEl = document.getElementById("bar"), legendEl = document.getElementById("legend");
+const totalSec = Object.values(D.sectionLines).reduce((a, b) => a + b, 0);
+D.sections.forEach(([k, label, page]) => {
+  const share = D.sectionLines[k] / totalSec;
+  const tip = `${label}: ${(share * 100).toFixed(1)}% of lines`;
+  barEl.append(el("button", { "data-k": k, style: `flex: ${share} 1 0; background: ${color(k)}`, title: tip, "aria-label": tip, onclick: () => setFilter(k) }));
+  legendEl.append(el("button", { "data-k": k, "aria-pressed": "false", onclick: () => setFilter(k) },
+    el("span", { class: "chip", style: `background:${color(k)}` }),
+    el("span", { text: label }),
+    el("span", { class: "pct", text: (share * 100).toFixed(1) + "%" })));
+});
+function setFilter(k) {
+  filter = filter === k ? null : k;
+  for (const b of barEl.children) b.classList.toggle("dim", !!filter && b.dataset.k !== filter);
+  for (const b of legendEl.children) { b.classList.toggle("dim", !!filter && b.dataset.k !== filter); b.setAttribute("aria-pressed", String(b.dataset.k === filter)); }
+  const note = document.getElementById("filter-note");
+  note.replaceChildren();
+  if (filter) {
+    const s = SEC[filter];
+    note.append(`Highlighting ${s.label}. `);
+    if (s.page) note.append(el("a", { href: `${PAPER}#page=${s.page}`, target: "_blank", rel: "noopener", text: `Paper p. ${s.page}` }), ". ");
+    note.append(el("button", { text: "Clear", onclick: () => setFilter(filter) }));
+    revealSection(filter);
+  }
+  renderTree();
+}
+function revealSection(k) {
+  // Expand the path to the three largest subtrees whose root belongs to the section.
+  N.map((n, i) => i).filter(i => secOf(i) === k).slice(0, 3).forEach(i => { let p = N[i][F.parent]; while (p >= 0) { open.add(p); p = N[p][F.parent]; } });
+}
+
+// Tree
+const open = new Set();
+let selected = 0;
+roots.forEach(r => { open.add(r); children[r].slice(0, 1).forEach(c => open.add(c)); });
+const treeEl = document.getElementById("tree");
+const maxW = Math.max(...roots.map(r => N[r][F.w]));
+
+function renderTree() {
+  const frag = document.createDocumentFragment();
+  const walk = (i, depth) => {
+    const n = N[i], kids = children[i], k = secOf(i), isOpen = open.has(i);
+    const hasKids = kids.length > 0 || n[F.hidN] > 0;
+    const row = el("div", {
+      class: "row" + (i === selected ? " sel" : "") + (filter && k !== filter ? " dim" : ""),
+      role: "treeitem", tabindex: i === selected ? "0" : "-1", "aria-selected": String(i === selected),
+      "aria-expanded": hasKids ? String(isOpen) : false, "data-i": i, style: `--indent:${depth * 14}px`,
+    },
+      el("span"),
+      el("span", { class: "caret", text: hasKids ? (isOpen ? "▾" : "▸") : "", "data-toggle": hasKids ? "1" : false }),
+      el("span", { class: "chip", style: `background:${color(k)}` }),
+      nameNode(n[F.name], "label"),
+      el("span", { class: "meter" }, el("span", { style: `width:${Math.max(2, n[F.w] / maxW * 100)}%` })),
+      el("span", { class: "w", text: pct(n[F.w]) }),
+    );
+    frag.append(row);
+    if (isOpen) {
+      kids.forEach(c => walk(c, depth + 1));
+      if (n[F.hidN] > 0) frag.append(el("div", { class: "row more", style: `--indent:${(depth + 1) * 14}px` },
+        el("span"), el("span"), el("span"),
+        el("span", { class: "label", text: `+ ${fmt(n[F.hidN])} smaller declarations, ${fmt(n[F.hidL])} lines` }), el("span"), el("span")));
+    }
+  };
+  roots.forEach(r => walk(r, 0));
+  if (D.rootHidden[1] > 0) frag.append(el("div", { class: "row more", style: "--indent:0px" },
+    el("span"), el("span"), el("span"),
+    el("span", { class: "label", text: `+ ${fmt(D.rootHidden[1])} smaller shared definitions and lemmas, ${fmt(D.rootHidden[0])} lines` }), el("span"), el("span")));
+  treeEl.replaceChildren(frag);
+}
+treeEl.addEventListener("click", e => {
+  const row = e.target.closest(".row[data-i]"); if (!row) return;
+  const i = +row.dataset.i;
+  if (e.target.closest("[data-toggle]")) { open.has(i) ? open.delete(i) : open.add(i); renderTree(); return; }
+  select(i, false);
+});
+treeEl.addEventListener("keydown", e => {
+  const row = e.target.closest(".row[data-i]"); if (!row) return;
+  const i = +row.dataset.i, rows = [...treeEl.querySelectorAll(".row[data-i]")], at = rows.indexOf(row);
+  const go = r => { if (r) { select(+r.dataset.i, false); treeEl.querySelector(`.row[data-i="${r.dataset.i}"]`)?.focus(); } };
+  if (e.key === "ArrowDown") { e.preventDefault(); go(rows[at + 1]); }
+  else if (e.key === "ArrowUp") { e.preventDefault(); go(rows[at - 1]); }
+  else if (e.key === "ArrowRight" || e.key === "Enter") { e.preventDefault(); if (!open.has(i)) { open.add(i); renderTree(); treeEl.querySelector(`.row[data-i="${i}"]`)?.focus(); } }
+  else if (e.key === "ArrowLeft") { e.preventDefault(); if (open.has(i)) { open.delete(i); renderTree(); treeEl.querySelector(`.row[data-i="${i}"]`)?.focus(); } else if (N[i][F.parent] >= 0) go(treeEl.querySelector(`.row[data-i="${N[i][F.parent]}"]`)); }
+});
+
+function select(i, scroll) {
+  selected = i;
+  let p = N[i][F.parent];
+  while (p >= 0) { open.add(p); p = N[p][F.parent]; }
+  renderTree();
+  renderSheet(i);
+  const row = treeEl.querySelector(`.row[data-i="${i}"]`);
+  if (row) {
+    const tr = treeEl.getBoundingClientRect(), rr = row.getBoundingClientRect();
+    if (rr.top < tr.top || rr.bottom > tr.bottom) treeEl.scrollTop += rr.top - tr.top - tr.height / 3;
+  }
+  if (scroll) document.getElementById("atlas-h").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+}
+
+function linkList(ids, emptyText) {
+  if (!ids.length) return el("p", { class: "note", text: emptyText });
+  const box = el("div", { class: "links" });
+  ids.slice().sort((a, b) => N[b][F.w] - N[a][F.w]).slice(0, 25).forEach(j => box.append(
+    el("button", { onclick: () => select(j, false), title: N[j][F.name] },
+      el("span", { class: "chip", style: `background:${color(secOf(j))}` }),
+      nameNode(N[j][F.name], "lname"),
+      el("span", { class: "lw", text: pct(N[j][F.w]) }))));
+  if (ids.length > 25) box.append(el("p", { class: "note", text: `and ${ids.length - 25} more` }));
+  return box;
+}
+
+function renderSheet(i) {
+  const n = N[i], m = M[n[F.mod]], k = m[1], s = SEC[k];
+  const sheet = document.getElementById("sheet");
+  const crumbs = el("nav", { class: "crumbs", "aria-label": "Path from the main theorems" });
+  const path = []; let p = n[F.parent];
+  while (p >= 0) { path.unshift(p); p = N[p][F.parent]; }
+  crumbs.append(el("span", { text: "Main theorems" }));
+  path.forEach(j => crumbs.append(" › ", el("button", { text: splitName(N[j][F.name])[1], title: N[j][F.name], onclick: () => select(j, false) })));
+  const file = m[0].replaceAll(".", "/") + ".lean";
+  const secPill = el("span", { class: "pill" }, el("span", { class: "chip", style: `background:${color(k)}` }), s.label, s.page ? " · " : "",
+    s.page ? el("a", { href: `${PAPER}#page=${s.page}`, target: "_blank", rel: "noopener", text: `p. ${s.page}` }) : null);
+  const metrics = el("div", { class: "metrics" },
+    el("div", {}, el("b", { text: pct(n[F.w]) }), el("span", { text: `of the cone (${fmt(n[F.w])} lines) under it` })),
+    el("div", {}, el("b", { text: fmt(n[F.size]) }), el("span", { text: "declarations it dominates" })),
+    el("div", {}, el("b", { text: fmt(n[F.own]) }), el("span", { text: "lines in its own definition" })),
+    el("div", {}, el("b", { text: fmt(n[F.fanIn]) }), el("span", { text: "declarations in the cone use it" })));
+  const shownUses = n[F.uses], hiddenUses = n[F.depsAll] - shownUses.length;
+  sheet.replaceChildren(
+    crumbs,
+    el("h3", {}, el("span", { class: "ns", text: splitName(n[F.name])[0] }), splitName(n[F.name])[1]),
+    el("div", { class: "pills" }, el("span", { class: "pill", text: n[F.kind] }), secPill),
+    metrics,
+    el("div", { class: "block" }, el("h4", { text: "Docstring" }),
+      n[F.doc] ? el("p", { class: "doc" }, inlineMd(n[F.doc])) : el("p", { class: "doc none", text: "No docstring. The module overview below is the nearest description." })),
+    el("div", { class: "block" },
+      el("div", { class: "block-head" }, el("h4", { text: "Statement" }),
+        el("label", { class: "toggle" },
+          el("input", { type: "checkbox", id: "short-ns", checked: shortNames ? "" : false,
+            onchange: e => { shortNames = e.target.checked; store("atlas.shortNames", shortNames ? "1" : "0"); renderSheet(selected); } }),
+          "Hide namespaces")),
+      el("pre", { class: "sig", text: shortNames ? stripNamespaces(n[F.sig]) : n[F.sig] })),
+    el("div", { class: "block" }, el("h4", { text: "Module" }),
+      el("p", { class: "module-doc" }, el("b", { text: m[2] || m[0] }), m[3] ? el("br") : null, m[3] ? inlineMd(m[3]) : null),
+      el("a", { class: "source", href: `${REPO}${file}#L${n[F.start]}-L${n[F.end]}`, target: "_blank", rel: "noopener", text: `${file}, lines ${n[F.start]}–${n[F.end]}` })),
+    el("div", { class: "block" }, el("h4", { text: `Uses (${fmt(n[F.depsAll])})` }),
+      linkList(shownUses, "No larger declarations."),
+      hiddenUses > 0 ? el("p", { class: "note", text: `${fmt(hiddenUses)} smaller dependencies are not shown.` }) : null),
+    el("div", { class: "block" }, el("h4", { text: "Used by, among shown declarations" }), linkList(usedBy[i], "Only the main theorems, or smaller declarations.")),
+  );
+  sheet.scrollTop = 0;
+}
+
+// Search
+const q = document.getElementById("q"), results = document.getElementById("results");
+let hits = [], active = -1;
+function runSearch() {
+  const term = q.value.trim().toLowerCase();
+  results.replaceChildren();
+  if (term.length < 2) { results.hidden = true; return; }
+  const words = term.split(/\s+/);
+  hits = N.map((n, i) => i).filter(i => { const s = (N[i][F.name] + " " + M[N[i][F.mod]][2]).toLowerCase(); return words.every(w => s.includes(w)); }).slice(0, 40);
+  active = -1;
+  if (!hits.length) results.append(el("div", { class: "empty", text: `No shown declaration matches “${q.value.trim()}”.` }));
+  hits.forEach((i, k) => results.append(el("button", { role: "option", "data-k": k, onclick: () => pick(i) },
+    el("span", { class: "chip", style: `background:${color(secOf(i))}` }), el("span", { class: "rname", text: N[i][F.name], title: N[i][F.name] }))));
+  results.hidden = false;
+}
+function pick(i) { results.hidden = true; select(i, false); treeEl.querySelector(`.row[data-i="${i}"]`)?.focus(); }
+q.addEventListener("input", runSearch);
+q.addEventListener("keydown", e => {
+  const btns = [...results.querySelectorAll("button")];
+  if (e.key === "ArrowDown" && btns.length) { e.preventDefault(); active = Math.min(active + 1, btns.length - 1); }
+  else if (e.key === "ArrowUp" && btns.length) { e.preventDefault(); active = Math.max(active - 1, 0); }
+  else if (e.key === "Enter" && hits.length) { e.preventDefault(); pick(hits[Math.max(active, 0)]); return; }
+  else if (e.key === "Escape") { results.hidden = true; return; }
+  btns.forEach((b, k) => b.classList.toggle("active", k === active));
+  btns[active]?.scrollIntoView({ block: "nearest" });
+});
+document.addEventListener("click", e => { if (!e.target.closest(".search")) results.hidden = true; });
+
+// Pane splitter
+const panes = document.getElementById("panes"), splitter = document.getElementById("splitter");
+function setSplit(p) {
+  p = Math.min(75, Math.max(20, p));
+  panes.style.setProperty("--split", p.toFixed(1) + "%");
+  splitter.setAttribute("aria-valuenow", String(Math.round(p)));
+  return p;
+}
+let split = setSplit(parseFloat(load("atlas.split")) || 42);
+splitter.addEventListener("pointerdown", e => {
+  e.preventDefault();
+  splitter.setPointerCapture(e.pointerId);
+  splitter.classList.add("dragging"); panes.classList.add("dragging");
+  const move = ev => { const r = panes.getBoundingClientRect(); split = setSplit((ev.clientX - r.left) / r.width * 100); };
+  const up = () => {
+    splitter.removeEventListener("pointermove", move); splitter.removeEventListener("pointerup", up); splitter.removeEventListener("pointercancel", up);
+    splitter.classList.remove("dragging"); panes.classList.remove("dragging");
+    store("atlas.split", String(split));
+  };
+  splitter.addEventListener("pointermove", move); splitter.addEventListener("pointerup", up); splitter.addEventListener("pointercancel", up);
+});
+splitter.addEventListener("keydown", e => {
+  if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+  e.preventDefault();
+  split = setSplit(split + (e.key === "ArrowLeft" ? -3 : 3));
+  store("atlas.split", String(split));
+});
+
+select(0, false);
+</script>

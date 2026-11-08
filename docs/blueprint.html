@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>html{color-scheme:light}body{margin:0;font-size:14px;font-family:system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<meta charset="utf-8">
+<title>Navier–Stokes Blueprint</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a drafting-sheet page. Layered dependency graph on top (top = Clay statements, bottom = base flow), then the spine as a top-down catalogue grouped by proof layer. */
+:root {
+  --paper: #f5f7f9;
+  --sheet: #ffffff;
+  --ink: #17212b;
+  --muted: #5a6876;
+  --rule: #d6dde4;
+  --accent: #1f5fa8;
+  --edge: #9aa9b8;
+  --edge-hi: #1f5fa8;
+  --g0: #6b4fa0; --g1: #1f5fa8; --g2: #b0452f; --g3: #2f7d6b;
+  --g4: #a8741a; --g5: #3d6f2a; --g6: #a03c6e; --g7: #4a5a6a;
+  --display: "Newsreader", "Iowan Old Style", Georgia, serif;
+  --body: "Public Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --paper: #0f1720; --sheet: #16212c; --ink: #e3e9ef; --muted: #93a2b1; --rule: #2a3846;
+  --accent: #7fb2ec; --edge: #4b5d6f; --edge-hi: #7fb2ec;
+  --g0: #b39ddb; --g1: #7fb2ec; --g2: #ef8f78; --g3: #6cc4ad; --g4: #e2b45c; --g5: #9ccf80; --g6: #e48ab5; --g7: #a9b6c3;
+  color-scheme: dark } }
+:root[data-theme="dark"] {
+  --paper: #0f1720; --sheet: #16212c; --ink: #e3e9ef; --muted: #93a2b1; --rule: #2a3846;
+  --accent: #7fb2ec; --edge: #4b5d6f; --edge-hi: #7fb2ec;
+  --g0: #b39ddb; --g1: #7fb2ec; --g2: #ef8f78; --g3: #6cc4ad; --g4: #e2b45c; --g5: #9ccf80; --g6: #e48ab5; --g7: #a9b6c3;
+  color-scheme: dark }
+body { background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-block: 28px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+header { display: grid; gap: 10px; margin-bottom: 22px; }
+.eyebrow { font: 500 12px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+h1 { font: 600 clamp(30px, 5vw, 44px)/1.08 var(--display); margin: 0; text-wrap: balance; }
+.lede { max-width: 68ch; color: var(--muted); margin: 0; }
+.lede b { color: var(--ink); font-weight: 600; }
+.facts { display: flex; flex-wrap: wrap; gap: 6px 18px; font: 12.5px/1.4 var(--mono); color: var(--muted); }
+.facts span b { color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; }
+h2 { font: 600 24px/1.2 var(--display); margin: 0; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12.5px; color: var(--muted); }
+.legend button { all: unset; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; padding: 2px 4px; border-radius: 4px; }
+.legend button:focus-visible { outline: 2px solid var(--accent); }
+.legend button[aria-pressed="true"] { color: var(--ink); background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.sw { width: 10px; height: 10px; border-radius: 2px; flex: none; }
+.graphbox { background: var(--sheet); border: 1px solid var(--rule); border-radius: 6px; margin: 12px 0 8px; overflow-x: auto; position: relative;
+  background-image: linear-gradient(var(--rule) 1px, transparent 1px), linear-gradient(90deg, var(--rule) 1px, transparent 1px);
+  background-size: 24px 24px; background-position: -1px -1px; }
+.graphbox svg { display: block; }
+.graphbox .bg { fill: var(--sheet); opacity: .82; }
+.node rect { fill: var(--sheet); stroke-width: 1.4; }
+.node text { font: 500 11px var(--body); fill: var(--ink); pointer-events: none; }
+.node { cursor: pointer; }
+.node:focus { outline: none; }
+.node:focus-visible rect, .node.sel rect { stroke-width: 2.6; }
+.edge { fill: none; stroke: var(--edge); stroke-width: 1; opacity: .7; }
+.edge.hi { stroke: var(--edge-hi); stroke-width: 2; opacity: 1; }
+.dim { opacity: .18; }
+.hint { font-size: 12.5px; color: var(--muted); margin: 0 0 28px; }
+.layer { margin-top: 34px; display: grid; gap: 12px; }
+.layer-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; border-bottom: 1px solid var(--rule); padding-bottom: 6px; }
+.layer-head .n { font: 12px var(--mono); color: var(--muted); }
+.layer-head p { margin: 0; color: var(--muted); font-size: 13.5px; flex-basis: 100%; max-width: 75ch; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 12px; }
+.card { background: var(--sheet); border: 1px solid var(--rule); border-left: 3px solid var(--c); border-radius: 4px; padding: 12px 14px; display: grid; gap: 7px; min-width: 0; scroll-margin-top: 20px; }
+.card.sel { box-shadow: 0 0 0 2px var(--accent); }
+.card h3 { margin: 0; font: 600 17px/1.25 var(--display); display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+.card h3 .ref { font: 400 12px var(--mono); color: var(--muted); white-space: nowrap; }
+.stmt { margin: 0; font: 400 15px/1.45 var(--display); }
+.lean { font: 12px/1.4 var(--mono); color: var(--accent); overflow-wrap: anywhere; }
+.loc { font: 11.5px var(--mono); color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 12px; }
+.bar { height: 4px; background: var(--rule); border-radius: 2px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--c); }
+.deps { display: flex; flex-wrap: wrap; gap: 4px 6px; font-size: 12px; color: var(--muted); align-items: center; }
+.chip { all: unset; cursor: pointer; font-size: 12px; padding: 1px 7px; border: 1px solid var(--rule); border-radius: 10px; color: var(--ink); }
+.chip:hover, .chip:focus-visible { border-color: var(--accent); color: var(--accent); }
+footer { margin-top: 40px; border-top: 1px solid var(--rule); padding-top: 14px; font-size: 13px; color: var(--muted); display: grid; gap: 6px; max-width: 80ch; }
+code { font-family: var(--mono); font-size: .9em; }
+.twocol { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 14px; margin-bottom: 30px; }
+.note { background: var(--sheet); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; min-width: 0; display: grid; gap: 10px; align-content: start; }
+.note p, .note ul { margin: 0; max-width: 68ch; }
+.note ul { padding-left: 18px; display: grid; gap: 7px; }
+.own { display: grid; gap: 5px; font-size: 12.5px; }
+.own .r { display: grid; grid-template-columns: minmax(0, 13em) 1fr 4.2em; gap: 8px; align-items: center; }
+.own .r span:last-child { font: 12px var(--mono); text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); }
+.own .t { height: 8px; background: var(--rule); border-radius: 2px; overflow: hidden; }
+.own .t i { display: block; height: 100%; }
+@media print {
+  .graphbox { overflow: visible; background-image: none; }
+  .graphbox svg { width: 100%; height: auto; }
+  .card, .note, .layer-head { break-inside: avoid; }
+  .hint, .legend { display: none; }
+  section[aria-labelledby="g-h"], section[aria-labelledby="s-h"] { break-before: page; }
+}
+@media (prefers-reduced-motion: no-preference) { .card, .edge, .node { transition: opacity .15s, box-shadow .15s; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">openai/NavierStokesAndEuler · NavierStokes/ · commit f9e8bc5</div>
+    <h1>Navier–Stokes Blueprint</h1>
+    <p class="lede">The proof's spine as <b><span id="nnodes"></span> load-bearing declarations</b>, each with a one-line informal statement. Edges mean “is proved using”, after transitive reduction through the ~23,800 declarations in between. Read top to bottom: Clay statements, Theorem 1.1, then the construction down to the axisymmetric base flow.</p>
+    <div class="facts" id="facts"></div>
+  </header>
+
+  <section class="twocol" aria-label="Summary">
+    <div class="note">
+      <h2>Spine or sprawl?</h2>
+      <p><b>The top is a clean spine.</b> From the Clay statements down to the viscosity-1 candidate the proof is a short chain: scaling, periodization, and a classical uniqueness argument. These layers are under 5% of the code.</p>
+      <p><b>The one idea</b> (paper §2–3): a swirling, axisymmetric flow concentrates on a shrinking annulus with τ = 1 − t, and its velocity grows like τ<sup>−1/2−h</sup> while its energy stays bounded because h &lt; 1/6. The flow does not solve Navier–Stokes exactly. Oscillatory waves supply the missing stress. Then repeated corrections push the residual to zero at every order (σ<sub>j</sub> = 1/5 + j/10), and the leftover residual becomes the smooth force f.</p>
+      <p><b>Below that it sprawls.</b> The construction splits into five cooperating branches: base flow, leading waves, iteration, summation, and localization. About <span id="shared"></span> lines (<span id="sharedpct"></span>) are shared machinery that no single branch owns, spread across hundreds of modules. Ownership of the rest:</p>
+      <div id="own" class="own"></div>
+    </div>
+    <div class="note">
+      <h2>What Lean actually checks</h2>
+      <ul>
+        <li>The two root theorems restate DeepMind's <code>formal-conjectures</code> versions of Fefferman's (C) and (D) word for word. The challenge file imports only Mathlib, and the proof never imports it.</li>
+        <li>The witness has <b>zero initial velocity</b>. All the work is done by a smooth force f that is compactly supported in space and in time t &gt; 0, which the Clay text permits.</li>
+        <li>Blowup is <b>pointwise unbounded speed</b> as t ↑ 1 (<code>SpeedUnboundedAtOne</code>). The proof also shows the H³ norm diverges.</li>
+        <li>The excluded competitors on ℝ³ are any smooth global solutions with bounded energy, the same force, and zero initial data. No support or growth condition is imposed on them. On the torus, not even an energy bound is imposed.</li>
+        <li>The repository prints <code>#print axioms</code> for both roots. I did not re-run the build for this page.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section aria-labelledby="g-h">
+    <h2 id="g-h">Dependency graph</h2>
+    <div class="legend" id="legend" role="group" aria-label="Highlight a proof layer"></div>
+    <div class="graphbox"><svg id="graph" role="img" aria-label="Layered dependency graph of the blueprint nodes"></svg></div>
+    <p class="hint">Click a node to highlight what it uses (below) and what uses it (above), and jump to its entry. Click the background to clear.</p>
+  </section>
+
+  <section aria-labelledby="s-h">
+    <h2 id="s-h">The spine, top down</h2>
+    <div id="layers"></div>
+  </section>
+
+  <footer>
+    <div><b>How this was built.</b> Declarations and dependencies come from the ns-explorer extraction (<code>data/ns-cone.json</code>, Lean elaborated environment, proof and statement dependencies). Nodes were picked from the dominator tree of the two Clay theorems: each owns a large subproof or is a statement the rest is organized around. “Cone” is the number of source lines in the node's full transitive dependency set inside <code>NavierStokes</code>.</div>
+    <div><b>Caveats.</b> The informal statements are my paraphrase of each declaration's Lean signature and docstring, not machine-checked text. Paper references are approximate: the Lean comments cite an earlier draft's numbering, so the mapping to the published PDF's sections was done by content.</div>
+  </footer>
+</div>
+
+<script>
+const DATA = {"nodes": [{"id": "NavierStokes.Comparator.navier_stokes_breakdown_R3", "name": "Comparator.navier_stokes_breakdown_R3", "label": "Option (C)", "group": "Clay statements", "paper": "Fefferman (C)", "stmt": "For every ν>0 there are smooth, rapidly decaying u₀ and f on ℝ³ such that no smooth global solution with bounded energy exists.", "kind": "theorem", "file": "NavierStokes/ComparatorSolution.lean", "line": 15, "cone": 226523, "own": 223, "deps": ["NavierStokesR3.comparator_of_breakdown", "NavierStokesR3.theorem_1_1"]}, {"id": "NavierStokes.Comparator.navier_stokes_breakdown_periodic", "name": "Comparator.navier_stokes_breakdown_periodic", "label": "Option (D)", "group": "Clay statements", "paper": "Fefferman (D)", "stmt": "For every ν>0 there are smooth periodic u₀ and f on ℝ³/ℤ³ such that no smooth global periodic solution exists.", "kind": "theorem", "file": "NavierStokes/ComparatorSolution.lean", "line": 22, "cone": 227418, "own": 1118, "deps": ["NavierStokes.ComparatorBridge.option_D_of_paper_candidate", "NavierStokes.PeriodicPaper.periodic_corollary"]}, {"id": "NavierStokesR3.comparator_of_breakdown", "name": "NavierStokesR3.comparator_of_breakdown", "label": "(C) from Thm 1.1", "group": "Clay statements", "paper": "§1", "stmt": "Theorem 1.1's force with zero datum meets the Clay decay conditions, and any Clay solution would be a global finite-energy solution.", "kind": "theorem", "file": "NavierStokes/R3/ComparatorBridge.lean", "line": 76, "cone": 426, "own": 150, "deps": []}, {"id": "NavierStokes.ComparatorBridge.option_D_of_paper_candidate", "name": "ComparatorBridge.option_D_of_paper_candidate", "label": "(D) from periodic corollary", "group": "Clay statements", "paper": "Cor. 10.6", "stmt": "A periodic blowup candidate plus the exclusion of global periodic solutions gives option (D) with exactly the Clay quantifiers.", "kind": "theorem", "file": "NavierStokes/PeriodicPaperComparator.lean", "line": 43, "cone": 499, "own": 97, "deps": []}, {"id": "NavierStokesR3.theorem_1_1", "name": "NavierStokesR3.theorem_1_1", "label": "Theorem 1.1", "group": "Theorem 1.1 & corollary", "paper": "Thm 1.1", "stmt": "For every ν>0: compactly supported smooth f, smooth u,p on [0,1) with u(0)=0, supports in one compact K, bounded energy, ‖u‖∞→∞ as t↑1; and no global bounded-energy solution.", "kind": "theorem", "file": "NavierStokes/R3/Theorem.lean", "line": 44, "cone": 226180, "own": 14, "deps": ["NavierStokesR3.theorem_1_1_with_initial_rest"]}, {"id": "NavierStokesR3.theorem_1_1_with_initial_rest", "name": "NavierStokesR3.theorem_1_1_with_initial_rest", "label": "Theorem 1.1 + initial rest", "group": "Theorem 1.1 & corollary", "paper": "Thm 1.1", "stmt": "Theorem 1.1, plus u=p=0 for |t|≤3/8 (needed to rescale time for the periodic corollary).", "kind": "theorem", "file": "NavierStokes/R3/Theorem.lean", "line": 24, "cone": 226166, "own": 224776, "deps": ["NavierStokesR3.ViscosityScaling.candidate_at_viscosity", "NavierStokesR3.ProblemStatement.CandidateProperties.no_global_solution_one", "NavierStokesR3.ActualCandidate.selected_candidate_one_with_initial_rest"]}, {"id": "NavierStokesR3.ViscosityScaling.candidate_at_viscosity", "name": "NavierStokesR3.ViscosityScaling.candidate_at_viscosity", "label": "Viscosity scaling", "group": "Theorem 1.1 & corollary", "paper": "(10.22)–(10.23)", "stmt": "u_ν(x,t)=√ν·u(x/√ν,t), p_ν=ν·p(x/√ν,t) turns a viscosity-1 candidate into a viscosity-ν one with the same singular time 1.", "kind": "theorem", "file": "NavierStokes/R3/ViscosityScaling.lean", "line": 170, "cone": 276, "own": 82, "deps": []}, {"id": "NavierStokes.PeriodicPaper.periodic_corollary", "name": "PeriodicPaper.periodic_corollary", "label": "Periodic corollary", "group": "Theorem 1.1 & corollary", "paper": "Cor. 10.6", "stmt": "For every ν>0 there is a 1-periodic candidate (support inside the fundamental cube) blowing up at t=1, and no global smooth periodic solution.", "kind": "theorem", "file": "NavierStokes/PeriodicPaperTheorem.lean", "line": 153, "cone": 227133, "own": 929, "deps": ["NavierStokesR3.theorem_1_1_with_initial_rest", "NavierStokes.PeriodicPaper.exists_compression_scale", "NavierStokesR3.ParabolicScaling.compressedCandidate", "NavierStokes.PeriodicPaper.of_compact_candidate", "NavierStokes.PeriodicPaper.CandidateProperties.no_global_solution"]}, {"id": "NavierStokes.PeriodicPaper.exists_compression_scale", "name": "PeriodicPaper.exists_compression_scale", "label": "Compression scale", "group": "Theorem 1.1 & corollary", "paper": "Cor. 10.6", "stmt": "One spatial scale l>1 squeezes the supports of u, p and f into the central quarter cube.", "kind": "theorem", "file": "NavierStokes/PeriodicPaperScalingSupport.lean", "line": 80, "cone": 166, "own": 110, "deps": []}, {"id": "NavierStokesR3.ParabolicScaling.compressedCandidate", "name": "NavierStokesR3.ParabolicScaling.compressedCandidate", "label": "Delayed parabolic rescaling", "group": "Theorem 1.1 & corollary", "paper": "Cor. 10.6", "stmt": "Parabolic rescaling by l, with a time shift that keeps the singular time at 1, preserves the candidate properties (using the initial rest).", "kind": "theorem", "file": "NavierStokes/R3/ParabolicScaling.lean", "line": 94, "cone": 552, "own": 312, "deps": []}, {"id": "NavierStokes.PeriodicPaper.of_compact_candidate", "name": "PeriodicPaper.of_compact_candidate", "label": "Periodize", "group": "Theorem 1.1 & corollary", "paper": "Cor. 10.6", "stmt": "Summing a compressed compact candidate over ℤ³ gives a periodic candidate: same equation, divergence-free, zero datum, speed blowup.", "kind": "theorem", "file": "NavierStokes/PeriodicPaperTheorem.lean", "line": 89, "cone": 601, "own": 282, "deps": []}, {"id": "NavierStokesR3.ProblemStatement.CandidateProperties.no_global_solution_one", "name": "NavierStokesR3.ProblemStatement.CandidateProperties.no_global_solution_one", "label": "No global solution (ℝ³)", "group": "No global solution", "paper": "Lemma 10.5", "stmt": "A viscosity-1 candidate rules out any global smooth bounded-energy solution with the same force and zero datum.", "kind": "theorem", "file": "NavierStokes/R3/CandidateBreakdown.lean", "line": 41, "cone": 8532, "own": 7985, "deps": ["NavierStokesR3.WholeSpaceUniqueness.candidate_global_agrees_before_one"]}, {"id": "NavierStokesR3.WholeSpaceUniqueness.candidate_global_agrees_before_one", "name": "NavierStokesR3.WholeSpaceUniqueness.candidate_global_agrees_before_one", "label": "Competitor agrees before t=1", "group": "No global solution", "paper": "Lemma 10.5", "stmt": "Any global smooth finite-energy solution with the same force equals the candidate at every time t<1.", "kind": "theorem", "file": "NavierStokes/R3/WholeSpaceUniqueness.lean", "line": 102, "cone": 8501, "own": 7952, "deps": ["NavierStokesR3.WholeSpaceUniqueness.classical_uniqueness_on_Icc"]}, {"id": "NavierStokesR3.WholeSpaceUniqueness.classical_uniqueness_on_Icc", "name": "NavierStokesR3.WholeSpaceUniqueness.classical_uniqueness_on_Icc", "label": "Whole-space uniqueness", "group": "No global solution", "paper": "Lemma 10.5", "stmt": "Two smooth solutions on [0,T] with the same force and datum, one compactly supported, both finite energy, coincide.", "kind": "theorem", "file": "NavierStokes/R3/WholeSpaceUniqueness.lean", "line": 28, "cone": 8403, "own": 7898, "deps": ["NavierStokesR3.PressureFlux.exists_uniform_actual_pressure_flux_bound", "NavierStokesR3.WholeSpaceComparisonClosure.eq_of_pressure_flux_bound"]}, {"id": "NavierStokesR3.PressureFlux.exists_uniform_actual_pressure_flux_bound", "name": "NavierStokesR3.PressureFlux.exists_uniform_actual_pressure_flux_bound", "label": "Pressure-flux bound", "group": "No global solution", "paper": "Lemma 10.5", "stmt": "The pressure flux through large spheres is bounded uniformly in time and cutoff radius (pressure recovered from the equation via Riesz transforms).", "kind": "theorem", "file": "NavierStokes/R3/PressureFlux.lean", "line": 574, "cone": 6777, "own": 5892, "deps": []}, {"id": "NavierStokesR3.WholeSpaceComparisonClosure.eq_of_pressure_flux_bound", "name": "NavierStokesR3.WholeSpaceComparisonClosure.eq_of_pressure_flux_bound", "label": "Energy-Gronwall closure", "group": "No global solution", "paper": "Lemma 10.5", "stmt": "Given the flux bound, a localized energy estimate for u−v with Sobolev, Young and Gronwall forces u=v.", "kind": "theorem", "file": "NavierStokes/R3/WholeSpaceComparisonClosure.lean", "line": 29, "cone": 2110, "own": 1258, "deps": []}, {"id": "NavierStokes.PeriodicPaper.CandidateProperties.no_global_solution", "name": "PeriodicPaper.CandidateProperties.no_global_solution", "label": "No global solution (𝕋³)", "group": "No global solution", "paper": "Cor. 10.6", "stmt": "A periodic candidate rules out every global smooth periodic solution with the same force and zero datum.", "kind": "theorem", "file": "NavierStokes/PeriodicPaperTheorem.lean", "line": 64, "cone": 1170, "own": 180, "deps": ["NavierStokes.PeriodicViscosity.excludes_global_solution"]}, {"id": "NavierStokes.PeriodicViscosity.excludes_global_solution", "name": "PeriodicViscosity.excludes_global_solution", "label": "Periodic uniqueness ⇒ exclusion", "group": "No global solution", "paper": "Cor. 10.6", "stmt": "Periodic classical uniqueness makes a global competitor agree with the candidate before t=1, so its bounded speed contradicts the blowup.", "kind": "theorem", "file": "NavierStokes/PeriodicViscosity.lean", "line": 21, "cone": 1122, "own": 170, "deps": []}, {"id": "NavierStokesR3.ActualCandidate.selected_candidate_one_with_initial_rest", "name": "NavierStokesR3.ActualCandidate.selected_candidate_one_with_initial_rest", "label": "Viscosity-1 candidate", "group": "Localization & force", "paper": "Prop. 10.1, Lemma 10.3", "stmt": "At ν=1 there exist u,p,f,K satisfying every property of Theorem 1.1, with u=p=0 for |t|≤3/8.", "kind": "theorem", "file": "NavierStokes/R3/ActualCandidate.lean", "line": 141, "cone": 217917, "own": 216403, "deps": ["NavierStokesR3.ActualCandidate.of_localized_fields", "NavierStokes.ActualCandidateAssembly.selected_witness"]}, {"id": "NavierStokesR3.ActualCandidate.of_localized_fields", "name": "NavierStokesR3.ActualCandidate.of_localized_fields", "label": "Compact whole-space fields", "group": "Localization & force", "paper": "Prop. 10.1", "stmt": "The cut-off fields before periodization give a whole-space candidate supported in a fixed cylinder, with a force that vanishes near t=0.", "kind": "theorem", "file": "NavierStokes/R3/ActualCandidate.lean", "line": 76, "cone": 1441, "own": 696, "deps": ["NavierStokes.R3CompactCandidate.of_localized_fields", "NavierStokesR3.CompactEnergy.uniform_finite_energy"]}, {"id": "NavierStokes.R3CompactCandidate.of_localized_fields", "name": "R3CompactCandidate.of_localized_fields", "label": "Unperiodize", "group": "Localization & force", "paper": "Prop. 10.1", "stmt": "The compactly supported fields agree with the periodic ones on the inner cube and vanish outside the support cylinder, so they solve the same equation on ℝ³.", "kind": "theorem", "file": "NavierStokes/R3CompactCandidate.lean", "line": 246, "cone": 620, "own": 151, "deps": []}, {"id": "NavierStokesR3.CompactEnergy.uniform_finite_energy", "name": "NavierStokesR3.CompactEnergy.uniform_finite_energy", "label": "Energy bound", "group": "Localization & force", "paper": "Lemma 10.4", "stmt": "Smooth compactly supported fields with a smooth compact force have uniformly bounded kinetic energy on [0,1) (energy identity and integrating factor).", "kind": "theorem", "file": "NavierStokes/R3/CompactEnergy.lean", "line": 340, "cone": 659, "own": 306, "deps": []}, {"id": "NavierStokes.CandidateConsequences.mixed_exists_force_with_consequences", "name": "CandidateConsequences.mixed_exists_force_with_consequences", "label": "Force extension", "group": "Localization & force", "paper": "Lemmas 10.2–10.3", "stmt": "If all derivatives of the residual have limits at t=1, the residual extends past t=1 to one smooth force with time decay; H³ and speed blow up.", "kind": "theorem", "file": "NavierStokes/CandidateConsequences.lean", "line": 182, "cone": 4161, "own": 1709, "deps": ["NavierStokes.MixedPeriodicAssembly.exists_candidate_force"]}, {"id": "NavierStokes.MixedPeriodicAssembly.exists_candidate_force", "name": "MixedPeriodicAssembly.exists_candidate_force", "label": "Localize & periodize", "group": "Localization & force", "paper": "§3.5, Prop. 10.1", "stmt": "Multiplying potentials and pressure by a space cutoff and a time switch, taking curls and periodizing, gives smooth divergence-free fields whose residual is a smooth force.", "kind": "theorem", "file": "NavierStokes/MixedPeriodicAssembly.lean", "line": 336, "cone": 2596, "own": 1103, "deps": []}, {"id": "NavierStokes.ActualCandidateAssembly.selected_witness", "name": "ActualCandidateAssembly.selected_witness", "label": "Selected witness", "group": "Summing the stages", "paper": "Prop. 9.9", "stmt": "With the fixed budget and threshold choices, the summed fields form a candidate with a smooth force and all its consequences.", "kind": "theorem", "file": "NavierStokes/ActualCandidateAssembly.lean", "line": 1177, "cone": 216917, "own": 41741, "deps": ["NavierStokes.ActualCandidateAssembly.witness"]}, {"id": "NavierStokes.ActualCandidateAssembly.witness", "name": "ActualCandidateAssembly.witness", "label": "Candidate witness", "group": "Summing the stages", "paper": "Prop. 9.9", "stmt": "For every admissible budget B and threshold N₀, the constructed stages assemble into a candidate (`Witness B N0`).", "kind": "theorem", "file": "NavierStokes/ActualCandidateAssembly.lean", "line": 1153, "cone": 216903, "own": 41736, "deps": ["NavierStokes.ActualCandidateAssembly.Witness", "NavierStokes.GermCandidateAssembly.exists_candidate_witness_of_finite_stages", "NavierStokes.ActualCandidateAssembly.endpoints"]}, {"id": "NavierStokes.ActualCandidateAssembly.Witness", "name": "ActualCandidateAssembly.Witness", "label": "Witness (statement)", "group": "Summing the stages", "paper": "Prop. 9.9", "stmt": "There is a scale schedule a_j such that the three stage sums A, B, P give localized fields satisfying CandidateProperties, H³-norm blowup and force-jet decay.", "kind": "def", "file": "NavierStokes/ActualCandidateAssembly.lean", "line": 1119, "cone": 173918, "own": 33, "deps": ["NavierStokes.ActualCyclePreservation.state_runInvariant", "NavierStokes.ActualCandidateConstruction.cycle"]}, {"id": "NavierStokes.GermCandidateAssembly.exists_candidate_witness_of_finite_stages", "name": "GermCandidateAssembly.exists_candidate_witness_of_finite_stages", "label": "Finite stages ⇒ candidate", "group": "Summing the stages", "paper": "Prop. 9.9, Thm 3.1", "stmt": "Abstract assembly: stage fields with estimates, shrinking supports, axis germs and endpoint data yield a schedule, smooth sums, residual flat at the singularity, and a candidate.", "kind": "theorem", "file": "NavierStokes/GermCandidateAssembly.lean", "line": 161, "cone": 38917, "own": 4096, "deps": ["NavierStokes.CandidateConsequences.mixed_exists_force_with_consequences", "NavierStokes.MixedCandidateAssembly.StageEstimates.exists_schedule", "NavierStokes.GermCandidateAssembly.origin_blowup"]}, {"id": "NavierStokes.MixedCandidateAssembly.StageEstimates.exists_schedule", "name": "MixedCandidateAssembly.StageEstimates.exists_schedule", "label": "Choose cutoff schedule", "group": "Summing the stages", "paper": "Prop. 9.9", "stmt": "From the finite-stage estimates choose a fast-growing schedule a_j so the cut-off tails converge with all derivatives.", "kind": "theorem", "file": "NavierStokes/MixedCandidateAssembly.lean", "line": 67, "cone": 3155, "own": 1194, "deps": ["NavierStokes.MixedDiagonalResidual.exists_physical_schedule_residual_zero"]}, {"id": "NavierStokes.MixedDiagonalResidual.exists_physical_schedule_residual_zero", "name": "MixedDiagonalResidual.exists_physical_schedule_residual_zero", "label": "Residual flat at (0,1)", "group": "Summing the stages", "paper": "(3.4), Lemma 5.4", "stmt": "With that schedule the residual of the summed fields has vanishing jets at the singular point: |∂ᵅ∂ᵇR| ≤ C·q^N for every N.", "kind": "theorem", "file": "NavierStokes/MixedDiagonalResidual.lean", "line": 197, "cone": 3091, "own": 1152, "deps": []}, {"id": "NavierStokes.GermCandidateAssembly.origin_blowup", "name": "GermCandidateAssembly.origin_blowup", "label": "Velocity blows up", "group": "Summing the stages", "paper": "Thm 3.1(iv)", "stmt": "The summed velocity on the axis tends to infinity as t↑1 because the base flow dominates there.", "kind": "theorem", "file": "NavierStokes/GermCandidateAssembly.lean", "line": 146, "cone": 29138, "own": 332, "deps": ["NavierStokes.FinalSlowBase.axis_tendsto"]}, {"id": "NavierStokes.ActualCandidateAssembly.estimates", "name": "ActualCandidateAssembly.estimates", "label": "Stage estimates", "group": "Summing the stages", "paper": "(9.17)", "stmt": "The actual potential, direct and pressure stages satisfy the StageEstimates record: raw derivative bounds plus finite-prefix residual rates.", "kind": "def", "file": "NavierStokes/ActualCandidateAssembly.lean", "line": 1090, "cone": 209030, "own": 27427, "deps": ["NavierStokes.GluedStageEstimates.actualStageEstimates", "NavierStokes.ActualCandidateAssembly.physicalData"]}, {"id": "NavierStokes.ActualCandidateAssembly.endpoints", "name": "ActualCandidateAssembly.endpoints", "label": "Endpoint inputs", "group": "Summing the stages", "paper": "Thm 3.1(ii)", "stmt": "Each stage extends smoothly up to t=1 away from the origin (off-plane endpoint obligations).", "kind": "theorem", "file": "NavierStokes/ActualCandidateAssembly.lean", "line": 1100, "cone": 210528, "own": 1077, "deps": ["NavierStokes.ActualCandidateAssembly.estimates", "NavierStokes.GermEndpointInputs.actual_germ_stage_endpoints_of_estimates"]}, {"id": "NavierStokes.GermEndpointInputs.actual_germ_stage_endpoints_of_estimates", "name": "GermEndpointInputs.actual_germ_stage_endpoints_of_estimates", "label": "Endpoints from estimates", "group": "Summing the stages", "paper": "Thm 3.1(ii)", "stmt": "The derivative estimates of glued physical stages imply their one-sided extensions to t=1 away from the singular point.", "kind": "theorem", "file": "NavierStokes/GermEndpointInputs.lean", "line": 433, "cone": 136743, "own": 1061, "deps": ["NavierStokes.CorrectionInitialization.ActualPrimary.choice_nonempty", "NavierStokes.FirstOrderBaseEdge.modified_first_pair_eq"]}, {"id": "NavierStokes.GluedStageEstimates.actualStageEstimates", "name": "GluedStageEstimates.actualStageEstimates", "label": "Glued stage record", "group": "Summing the stages", "paper": "(9.17)–(9.18)", "stmt": "Combine the residual rates, signed-wave and mean data, and exact prefix realizations into the complete stage-estimate record.", "kind": "def", "file": "NavierStokes/GluedStageEstimates.lean", "line": 681, "cone": 177535, "own": 14119, "deps": ["NavierStokes.GluedStageEstimates.stageEstimates_of_component_bounds", "NavierStokes.ActualParticularCoherence.raw_outputs"]}, {"id": "NavierStokes.GluedStageEstimates.stageEstimates_of_component_bounds", "name": "GluedStageEstimates.stageEstimates_of_component_bounds", "label": "Record from components", "group": "Summing the stages", "paper": "(9.17)", "stmt": "Component bounds on particular, signed and mean increments give the stage estimates, with the residual floor at the next band.", "kind": "def", "file": "NavierStokes/GluedStageEstimates.lean", "line": 377, "cone": 162127, "own": 11596, "deps": ["NavierStokes.ActualCycleResidualBounds.finite_residual_rates", "NavierStokes.CorrectionAnalyticStep.step"]}, {"id": "NavierStokes.ActualSignedWaveData.signedInputs", "name": "ActualSignedWaveData.signedInputs", "label": "Signed-wave inputs", "group": "Summing the stages", "paper": "§7", "stmt": "Physical bounds for the signed oscillatory increments of every cycle, built from the native wave family.", "kind": "def", "file": "NavierStokes/ActualSignedWaveData.lean", "line": 655, "cone": 177363, "own": 14, "deps": ["NavierStokes.ActualCyclePreservation.state_runInvariant"]}, {"id": "NavierStokes.ActualCandidateAssembly.physicalData", "name": "ActualCandidateAssembly.physicalData", "label": "Physical data per cycle", "group": "Summing the stages", "paper": "§9", "stmt": "After J cycles, the physical prefix fields match the cycle state (they realize the abstract state literally).", "kind": "theorem", "file": "NavierStokes/ActualCandidateAssembly.lean", "line": 1079, "cone": 191431, "own": 7605, "deps": ["NavierStokes.ActualCandidateAssembly.stageRealizations"]}, {"id": "NavierStokes.ActualCandidateAssembly.stageRealizations", "name": "ActualCandidateAssembly.stageRealizations", "label": "Stage realizations", "group": "Summing the stages", "paper": "§9", "stmt": "Each finite prefix of the stage sums is the physical field of the corresponding cycle state.", "kind": "theorem", "file": "NavierStokes/ActualCandidateAssembly.lean", "line": 1059, "cone": 189414, "own": 6329, "deps": ["NavierStokes.ActualSignedWaveData.signedInputs", "NavierStokes.ActualCandidateConstruction.cycle"]}, {"id": "NavierStokes.ActualCycleResidualBounds.finite_residual_rates", "name": "ActualCycleResidualBounds.finite_residual_rates", "label": "Finite residual rates", "group": "Correction iteration", "paper": "Prop. 9.6, (9.18)", "stmt": "After J cycles the residual of the finite stage decays like q^{hσ_J − K_m} in every C^m norm, with loss K_m fixed before J.", "kind": "theorem", "file": "NavierStokes/ActualCycleResidualBounds.lean", "line": 1187, "cone": 120033, "own": 9599, "deps": ["NavierStokes.ActualCycleResidualBounds.Invariant.residual_jetRate", "NavierStokes.ActualIterationLedger.sigma"]}, {"id": "NavierStokes.ActualCycleResidualBounds.Invariant.residual_jetRate", "name": "ActualCycleResidualBounds.Invariant.residual_jetRate", "label": "Residual from invariant", "group": "Correction iteration", "paper": "(9.18)", "stmt": "If a cycle state satisfies the invariant at accuracy σ, its full physical residual has the rate q^{hσ−K_m}.", "kind": "theorem", "file": "NavierStokes/ActualCycleResidualBounds.lean", "line": 1156, "cone": 119141, "own": 9512, "deps": ["NavierStokes.ActualCycleResidualBounds.Invariant.native_residual", "NavierStokes.FirstOrderBaseEdge.modified_first_pair_eq"]}, {"id": "NavierStokes.ActualCycleResidualBounds.Invariant.native_residual", "name": "ActualCycleResidualBounds.Invariant.native_residual", "label": "Native residual gain", "group": "Correction iteration", "paper": "Prop. 9.3", "stmt": "Every term of the state's residual (waves, means, pressure, cutoffs) has the required gain, with one phase loss for all cycles.", "kind": "theorem", "file": "NavierStokes/ActualCycleResidualBounds.lean", "line": 843, "cone": 112522, "own": 3223, "deps": ["NavierStokes.ActualCycleResidualBounds.Invariant.fullResidual_decomposition", "NavierStokes.FinalSlowBase.error_jetRate"]}, {"id": "NavierStokes.ActualCycleResidualBounds.Invariant.fullResidual_decomposition", "name": "ActualCycleResidualBounds.Invariant.fullResidual_decomposition", "label": "Residual decomposition", "group": "Correction iteration", "paper": "Prop. 9.3, (9.3)", "stmt": "The full residual splits into wave, mean, alias and remainder parts; the axisymmetric alias cancels by the angular-mean equation.", "kind": "theorem", "file": "NavierStokes/ActualCycleResidualBounds.lean", "line": 308, "cone": 92840, "own": 1632, "deps": ["NavierStokes.CorrectionInitialization.ActualPrimary.choice_nonempty"]}, {"id": "NavierStokes.ActualCyclePreservation.state_runInvariant", "name": "ActualCyclePreservation.state_runInvariant", "label": "Invariant for all cycles", "group": "Correction iteration", "paper": "Prop. 9.6", "stmt": "For every j, the j-th cycle state satisfies the run invariant at accuracy σ_j = 1/5 + j/10.", "kind": "theorem", "file": "NavierStokes/ActualCyclePreservation.lean", "line": 824, "cone": 171457, "own": 3659, "deps": ["NavierStokes.ActualCyclePreservation.initial_runInvariant", "NavierStokes.CorrectionAnalyticStep.step", "NavierStokes.ActualCyclePreservation.particularData", "NavierStokes.ActualCyclePreservation.waveData_of_particular", "NavierStokes.ActualParticularCoherence.raw_outputs"]}, {"id": "NavierStokes.ActualCyclePreservation.initial_runInvariant", "name": "ActualCyclePreservation.initial_runInvariant", "label": "Invariant at j=0", "group": "Correction iteration", "paper": "Prop. 9.6", "stmt": "The initialized state satisfies the run invariant at σ₀ = 1/5.", "kind": "theorem", "file": "NavierStokes/ActualCyclePreservation.lean", "line": 773, "cone": 140096, "own": 3126, "deps": ["NavierStokes.ActualIterationLedger.sigma", "NavierStokes.ActualInitialization.initial_invariant"]}, {"id": "NavierStokes.CorrectionAnalyticStep.step", "name": "CorrectionAnalyticStep.step", "label": "One correction cycle", "group": "Correction iteration", "paper": "Prop. 9.6", "stmt": "One cycle (waves, mean flow, pressure, five radial moments) maps invariant at σ to invariant at σ+1/10, deriving all bookkeeping.", "kind": "theorem", "file": "NavierStokes/CorrectionAnalyticStep.lean", "line": 518, "cone": 28704, "own": 5352, "deps": ["NavierStokes.CrossBasedMeanComposition.CycleParameters.mean_gain_from_waves_of_cross_defects"]}, {"id": "NavierStokes.CrossBasedMeanComposition.CycleParameters.mean_gain_from_waves_of_cross_defects", "name": "CrossBasedMeanComposition.CycleParameters.mean_gain_from_waves_of_cross_defects", "label": "Mean-flow gain", "group": "Correction iteration", "paper": "§8, (8.25)–(8.27)", "stmt": "The angular-mean correction built from this cycle's signed cross covariance improves the mean residual by the required gain.", "kind": "theorem", "file": "NavierStokes/CrossBasedMeanComposition.lean", "line": 543, "cone": 20348, "own": 2864, "deps": []}, {"id": "NavierStokes.ActualCyclePreservation.particularData", "name": "ActualCyclePreservation.particularData", "label": "Particular-wave data", "group": "Correction iteration", "paper": "§7", "stmt": "Under the run invariant, the particular waves of the cycle exist with the needed analytic bounds.", "kind": "theorem", "file": "NavierStokes/ActualCyclePreservation.lean", "line": 812, "cone": 114109, "own": 2890, "deps": ["NavierStokes.CorrectionInitialization.ActualPrimary.choice_nonempty"]}, {"id": "NavierStokes.ActualCyclePreservation.waveData_of_particular", "name": "ActualCyclePreservation.waveData_of_particular", "label": "Wave data for the step", "group": "Correction iteration", "paper": "§7", "stmt": "The particular and signed waves of the cycle supply the WaveData input of the analytic step.", "kind": "theorem", "file": "NavierStokes/ActualCyclePreservation.lean", "line": 689, "cone": 120842, "own": 2052, "deps": ["NavierStokes.CorrectionInitialization.ActualPrimary.choice_nonempty"]}, {"id": "NavierStokes.ActualParticularCoherence.raw_outputs", "name": "ActualParticularCoherence.raw_outputs", "label": "Raw wave identities", "group": "Correction iteration", "paper": "§7", "stmt": "The three raw output identities of the particular-wave solve hold for the current source.", "kind": "theorem", "file": "NavierStokes/ActualParticularCoherence.lean", "line": 934, "cone": 94325, "own": 2196, "deps": ["NavierStokes.CorrectionInitialization.ActualPrimary.choice_nonempty"]}, {"id": "NavierStokes.ActualCandidateConstruction.cycle", "name": "ActualCandidateConstruction.cycle", "label": "The iteration", "group": "Correction iteration", "paper": "§9", "stmt": "cycle B N0 j: start from the initialized state and apply the same correction step j times.", "kind": "def", "file": "NavierStokes/ActualCandidateConstruction.lean", "line": 40, "cone": 91350, "own": 3, "deps": ["NavierStokes.CorrectionInitialization.ActualPrimary.choice_nonempty"]}, {"id": "NavierStokes.ActualIterationLedger.sigma", "name": "ActualIterationLedger.sigma", "label": "σ_j ledger", "group": "Correction iteration", "paper": "(9.8)", "stmt": "Accuracy after j cycles: σ_j = 1/5 + j/10 → ∞.", "kind": "def", "file": "NavierStokes/ActualIterationLedger.lean", "line": 21, "cone": 4, "own": 2, "deps": []}, {"id": "NavierStokes.ActualInitialization.initial_invariant", "name": "ActualInitialization.initial_invariant", "label": "Initialized state", "group": "Leading waves (initial stage)", "paper": "Prop. 7.5", "stmt": "The initial correction state (base flow plus primary oscillatory waves) satisfies every analytic, support and representation condition of the cycle.", "kind": "theorem", "file": "NavierStokes/ActualInitialization.lean", "line": 1425, "cone": 136150, "own": 2516, "deps": ["NavierStokes.CorrectionInitialization.ActualPrimary.choice_nonempty", "NavierStokes.FirstOrderBaseEdge.modified_first_pair_eq"]}, {"id": "NavierStokes.CorrectionInitialization.ActualPrimary.choice_nonempty", "name": "CorrectionInitialization.ActualPrimary.choice_nonempty", "label": "Primary wave choice", "group": "Leading waves (initial stage)", "paper": "§6–7", "stmt": "For each B, N₀ there is a primary family of oscillatory waves, with covariance and phase geometry built from the base profile.", "kind": "theorem", "file": "NavierStokes/CorrectionInitialization.lean", "line": 3923, "cone": 88873, "own": 4721, "deps": ["NavierStokes.PrimaryTargetBounds.exists_constructed_bounds", "NavierStokes.CorrectionInitialization.ActualPrimary.profile"]}, {"id": "NavierStokes.PrimaryTargetBounds.exists_constructed_bounds", "name": "PrimaryTargetBounds.exists_constructed_bounds", "label": "Primary covariance bounds", "group": "Leading waves (initial stage)", "paper": "Prop. 7.5", "stmt": "The primary waves' averaged quadratic stress (covariance) matches the target annular stress, with bounds from the finite matrix solve.", "kind": "theorem", "file": "NavierStokes/PrimaryTargetBounds.lean", "line": 1012, "cone": 53340, "own": 4716, "deps": ["NavierStokes.PrimaryGeometryAssembly.exists_prepared"]}, {"id": "NavierStokes.PrimaryGeometryAssembly.exists_prepared", "name": "PrimaryGeometryAssembly.exists_prepared", "label": "Phase geometry", "group": "Leading waves (initial stage)", "paper": "§6", "stmt": "The summed base, positive mask representatives and strict stress cone give all data for the phase theorem, with one threshold for every label.", "kind": "theorem", "file": "NavierStokes/PrimaryGeometryAssembly.lean", "line": 387, "cone": 45634, "own": 2301, "deps": ["NavierStokes.ActualSlowAxis.hierarchy", "NavierStokes.TerminalHistoryBridge.forward_stresses_eq_profile"]}, {"id": "NavierStokes.CorrectionInitialization.ActualPrimary.profile", "name": "CorrectionInitialization.ActualPrimary.profile", "label": "The fixed profile", "group": "Axisymmetric base flow", "paper": "§4", "stmt": "The single base profile (E, U, Π and h) used everywhere downstream.", "kind": "abbrev", "file": "NavierStokes/CorrectionInitialization.lean", "line": 3886, "cone": 60329, "own": 34814, "deps": ["NavierStokes.FinalSlowBase.profileData_nonempty"]}, {"id": "NavierStokes.FinalSlowBase.profileData_nonempty", "name": "FinalSlowBase.profileData_nonempty", "label": "Profile exists", "group": "Axisymmetric base flow", "paper": "Thm 4.6, Prop. 5.5", "stmt": "There is profile data: a nominal outgoing profile, its cone certificate and a solved finite modulation.", "kind": "theorem", "file": "NavierStokes/FinalSlowBase.lean", "line": 627, "cone": 60325, "own": 34810, "deps": ["NavierStokes.NominalConeAssembly.exists_nominal_cone", "NavierStokes.ModulatedProfileAssembly.exists_of_certificate"]}, {"id": "NavierStokes.FinalSlowBase.axis_tendsto", "name": "FinalSlowBase.axis_tendsto", "label": "Base blows up on axis", "group": "Axisymmetric base flow", "paper": "(3.6), Prop. B.2", "stmt": "The base velocity at the origin tends to infinity as t↑1.", "kind": "theorem", "file": "NavierStokes/FinalSlowBase.lean", "line": 372, "cone": 28832, "own": 201, "deps": ["NavierStokes.ActualSlowAxis.hierarchy"]}, {"id": "NavierStokes.FinalSlowBase.error_jetRate", "name": "FinalSlowBase.error_jetRate", "label": "Base residual rate", "group": "Axisymmetric base flow", "paper": "Prop. 5.5, (5.41)", "stmt": "The base flow's residual is the divergence of an annular stress plus a remainder vanishing to every order at the singular point.", "kind": "theorem", "file": "NavierStokes/FinalSlowBase.lean", "line": 335, "cone": 34884, "own": 3113, "deps": ["NavierStokes.ActualSlowAxis.hierarchy"]}, {"id": "NavierStokes.NominalConeAssembly.exists_nominal_cone", "name": "NominalConeAssembly.exists_nominal_cone", "label": "Nominal profile + cone", "group": "Axisymmetric base flow", "paper": "Thm 4.6", "stmt": "There exist an outgoing profile F and nominal witness W carrying the full stress-cone certificate.", "kind": "theorem", "file": "NavierStokes/NominalConeAssembly.lean", "line": 1517, "cone": 53323, "own": 29851, "deps": ["NavierStokes.NominalConeAssembly.exists_certificate", "NavierStokes.PreparedOutgoing.exists_prepared"]}, {"id": "NavierStokes.NominalConeAssembly.exists_certificate", "name": "NominalConeAssembly.exists_certificate", "label": "Cone certificate", "group": "Axisymmetric base flow", "paper": "Thm 4.6", "stmt": "Every prepared outgoing profile has a nominal witness with the full cone certificate.", "kind": "theorem", "file": "NavierStokes/NominalConeAssembly.lean", "line": 1509, "cone": 42097, "own": 17843, "deps": ["NavierStokes.NominalConeAssembly.assembly_exists", "NavierStokes.TerminalHistoryBridge.forward_stresses_eq_profile"]}, {"id": "NavierStokes.NominalConeAssembly.assembly_exists", "name": "NominalConeAssembly.assembly_exists", "label": "Cone assembly", "group": "Axisymmetric base flow", "paper": "§4", "stmt": "For a prepared profile the cone coordinates can be assembled region by region (entrance, matching, outgoing).", "kind": "theorem", "file": "NavierStokes/NominalConeAssembly.lean", "line": 1482, "cone": 30122, "own": 13572, "deps": ["NavierStokes.MatchingConeBounds.preparedWitness_exists"]}, {"id": "NavierStokes.PreparedOutgoing.exists_prepared", "name": "PreparedOutgoing.exists_prepared", "label": "Prepared outgoing profile", "group": "Axisymmetric base flow", "paper": "§4", "stmt": "An outgoing profile exists with a clean stress cone at every sufficiently late matching radius.", "kind": "theorem", "file": "NavierStokes/PreparedOutgoing.lean", "line": 34, "cone": 17022, "own": 11187, "deps": ["NavierStokes.OutgoingCone.exists_ordered_profile_cone"]}, {"id": "NavierStokes.OutgoingCone.exists_ordered_profile_cone", "name": "OutgoingCone.exists_ordered_profile_cone", "label": "Outgoing clean cone", "group": "Axisymmetric base flow", "paper": "§4", "stmt": "For large m and amplitude P there is λ₀ such that every outgoing profile with λ<λ₀ satisfies the clean outgoing cone.", "kind": "theorem", "file": "NavierStokes/OutgoingCone.lean", "line": 501, "cone": 15084, "own": 7651, "deps": ["NavierStokes.PulseCone.exists_corrected_pulse_threshold"]}, {"id": "NavierStokes.PulseCone.exists_corrected_pulse_threshold", "name": "PulseCone.exists_corrected_pulse_threshold", "label": "Pulse cone", "group": "Axisymmetric base flow", "paper": "§4", "stmt": "One small-parameter threshold makes the corrected pulse's stress lie in the cone, uniformly over the pulse and parameter band.", "kind": "theorem", "file": "NavierStokes/PulseCone.lean", "line": 1977, "cone": 9564, "own": 2173, "deps": []}, {"id": "NavierStokes.MatchingConeBounds.preparedWitness_exists", "name": "MatchingConeBounds.preparedWitness_exists", "label": "Matching region", "group": "Axisymmetric base flow", "paper": "§4", "stmt": "Through the shape transition and moment repair the cone bounds hold; scale, normalization and continuation are chosen in order.", "kind": "theorem", "file": "NavierStokes/MatchingConeBounds.lean", "line": 973, "cone": 23592, "own": 10732, "deps": ["NavierStokes.ActivationContinuation.exists_activation_continuation"]}, {"id": "NavierStokes.NaturalEntrance.exists_entranceProfile", "name": "NaturalEntrance.exists_entranceProfile", "label": "Entrance profile", "group": "Axisymmetric base flow", "paper": "§4", "stmt": "One large scale makes the natural (inner) profiles satisfy the entrance test for every larger normalization.", "kind": "theorem", "file": "NavierStokes/NaturalEntrance.lean", "line": 1107, "cone": 6074, "own": 2571, "deps": []}, {"id": "NavierStokes.ActivationContinuation.exists_activation_continuation", "name": "ActivationContinuation.exists_activation_continuation", "label": "Activation continuation", "group": "Axisymmetric base flow", "paper": "§4", "stmt": "The relaxed continuation after activation exists up to X=110, with parameters chosen in the order Λ, C, then small ones.", "kind": "theorem", "file": "NavierStokes/ActivationContinuation.lean", "line": 1942, "cone": 15648, "own": 4539, "deps": ["NavierStokes.NaturalEntrance.exists_entranceProfile"]}, {"id": "NavierStokes.ModulatedProfileAssembly.exists_of_certificate", "name": "ModulatedProfileAssembly.exists_of_certificate", "label": "Finite modulation", "group": "Axisymmetric base flow", "paper": "§4–5", "stmt": "A nominal witness with certificate admits a modulated profile whose stress lies in the true cone on the whole active annulus.", "kind": "theorem", "file": "NavierStokes/ModulatedProfileAssembly.lean", "line": 1098, "cone": 17910, "own": 4737, "deps": ["NavierStokes.ModulatedCone.Repaired.exists_with_moment_repair"]}, {"id": "NavierStokes.ModulatedCone.Repaired.exists_with_moment_repair", "name": "ModulatedCone.Repaired.exists_with_moment_repair", "label": "Five-row moment repair", "group": "Axisymmetric base flow", "paper": "§5", "stmt": "A nonlinear five-row solve plus modulation at one integer frequency keeps the true cone and restores all five histories.", "kind": "theorem", "file": "NavierStokes/ModulatedCone.lean", "line": 1410, "cone": 7508, "own": 3090, "deps": []}, {"id": "NavierStokes.ActualSlowAxis.hierarchy", "name": "ActualSlowAxis.hierarchy", "label": "All-order axis recursion", "group": "Axisymmetric base flow", "paper": "§5", "stmt": "The natural/ACT base functions generate all slow orders of the local expansion near the axis.", "kind": "def", "file": "NavierStokes/ActualSlowAxis.lean", "line": 287, "cone": 7763, "own": 4955, "deps": ["NavierStokes.SlowRecursion.buildLocalHierarchy"]}, {"id": "NavierStokes.SlowRecursion.buildLocalHierarchy", "name": "SlowRecursion.buildLocalHierarchy", "label": "Slow-order recursion", "group": "Axisymmetric base flow", "paper": "§5", "stmt": "Every positive slow order is built from one finite base profile on one fixed radial core and parameter domain.", "kind": "def", "file": "NavierStokes/SlowRecursion.lean", "line": 1270, "cone": 6389, "own": 4949, "deps": []}, {"id": "NavierStokes.FirstOrderBaseEdge.modified_first_pair_eq", "name": "FirstOrderBaseEdge.modified_first_pair_eq", "label": "First stress coefficient", "group": "Axisymmetric base flow", "paper": "§5", "stmt": "On the terminal collar the first stress coefficient is the canonical primitive of the repaired residual.", "kind": "theorem", "file": "NavierStokes/FirstOrderBaseEdge.lean", "line": 727, "cone": 29283, "own": 1394, "deps": ["NavierStokes.ActualSlowAxis.hierarchy"]}, {"id": "NavierStokes.TerminalHistoryBridge.forward_stresses_eq_profile", "name": "TerminalHistoryBridge.forward_stresses_eq_profile", "label": "Terminal stresses", "group": "Axisymmetric base flow", "paper": "§4", "stmt": "Forward histories equal the profile's angular stress up to and including the switch point and both parameter endpoints.", "kind": "theorem", "file": "NavierStokes/TerminalHistoryBridge.lean", "line": 1398, "cone": 13901, "own": 2023, "deps": []}], "totalLines": 227641, "totalDecls": 23851, "ownership": {"Shared machinery": 109872, "Axisymmetric base flow": 46500, "Summing the stages": 30265, "Correction iteration": 20124, "No global solution": 8165, "Leading waves (initial stage)": 7237, "Theorem 1.1 & corollary": 2675, "Localization & force": 2405, "Clay statements": 398}};
+const GROUPS = ["Clay statements","Theorem 1.1 & corollary","No global solution","Localization & force","Summing the stages","Correction iteration","Leading waves (initial stage)","Axisymmetric base flow"];
+const GDESC = {
+  "Clay statements": "The two Millennium Prize breakdown alternatives, stated exactly as in the Comparator challenge file, and the adapters that reduce them to the paper's theorems.",
+  "Theorem 1.1 & corollary": "Theorem 1.1 at every viscosity by scaling from ν = 1; the torus corollary by compressing, time-shifting and periodizing the compact solution.",
+  "No global solution": "Why blowup of the candidate excludes a global solution: classical uniqueness forces any global competitor to coincide with the candidate before t = 1.",
+  "Localization & force": "Cutting the local fields off in space and time, checking the energy bound, and extending the residual past t = 1 as one smooth compactly supported force.",
+  "Summing the stages": "The infinite sum of correction stages with shrinking cutoffs: a schedule is chosen so the sum is smooth, its residual is flat at the singular point, and the velocity still blows up.",
+  "Correction iteration": "The induction: each correction cycle raises the residual decay exponent σ by 1/10, starting from σ₀ = 1/5.",
+  "Leading waves (initial stage)": "The primary oscillatory velocities whose averaged quadratic stress supplies the base flow's missing annular stress.",
+  "Axisymmetric base flow": "The concentrating swirling profile (E, U, Π) in similarity coordinates: its existence, the stress-cone certificate, and the all-order expansion near the axis."
+};
+const nodes = DATA.nodes;
+const byId = Object.fromEntries(nodes.map(n => [n.id, n]));
+const gi = g => GROUPS.indexOf(g);
+const users = Object.fromEntries(nodes.map(n => [n.id, []]));
+nodes.forEach(n => n.deps.forEach(d => users[d].push(n.id)));
+const maxCone = Math.max(...nodes.map(n => n.cone));
+const fmt = x => x.toLocaleString("en-US");
+
+document.getElementById("nnodes").textContent = nodes.length;
+document.getElementById("facts").innerHTML =
+  `<span><b>${nodes.length}</b> blueprint nodes</span><span><b>${nodes.reduce((a,n)=>a+n.deps.length,0)}</b> edges</span>` +
+  `<span><b>${fmt(DATA.totalDecls)}</b> declarations in the proof cone</span><span><b>${fmt(DATA.totalLines)}</b> lines</span>`;
+
+/* ---------- ownership ---------- */
+{
+  const O = DATA.ownership, tot = Object.values(O).reduce((a,b)=>a+b,0);
+  document.getElementById("shared").textContent = fmt(O["Shared machinery"]);
+  document.getElementById("sharedpct").textContent = Math.round(100*O["Shared machinery"]/tot) + "%";
+  const rowsO = Object.entries(O).sort((a,b)=>b[1]-a[1]);
+  document.getElementById("own").innerHTML = rowsO.map(([g,v]) => {
+    const i = gi(g), col = i >= 0 ? `var(--g${i})` : "var(--muted)";
+    return `<div class="r"><span>${g}</span><span class="t"><i style="width:${(100*v/rowsO[0][1]).toFixed(1)}%;background:${col}"></i></span><span>${(100*v/tot).toFixed(1)}%</span></div>`;
+  }).join("");
+}
+
+/* ---------- layered layout ---------- */
+const layer = {};
+function depth(id) { // longest path from a root
+  if (layer[id] !== undefined) return layer[id];
+  const us = users[id];
+  layer[id] = us.length ? 1 + Math.max(...us.map(depth)) : 0;
+  return layer[id];
+}
+nodes.forEach(n => depth(n.id));
+const L = Math.max(...Object.values(layer)) + 1;
+let rows = Array.from({length: L}, () => []);
+nodes.forEach(n => rows[layer[n.id]].push(n.id));
+rows.forEach(r => r.sort((a,b) => gi(byId[a].group) - gi(byId[b].group)));
+const pos = {};
+const setPos = () => rows.forEach(r => r.forEach((id,i) => pos[id] = i - (r.length-1)/2));
+setPos();
+for (let it = 0; it < 12; it++) {
+  const down = it % 2 === 0;
+  const seq = down ? rows.slice(1) : rows.slice(0,-1).reverse();
+  seq.forEach(r => {
+    const bc = id => { const nb = down ? users[id] : byId[id].deps; return nb.length ? nb.reduce((a,x)=>a+pos[x],0)/nb.length : pos[id]; };
+    r.sort((a,b) => bc(a) - bc(b));
+  });
+  setPos();
+}
+const NW = 150, NH = 30, HG = 18, VG = 30, PAD = 20;
+const maxRow = Math.max(...rows.map(r => r.length));
+const W = maxRow * (NW + HG) + PAD*2, H = L * (NH + VG) + PAD*2 - VG;
+const xy = {};
+rows.forEach((r, li) => r.forEach((id, i) => {
+  const x = W/2 + (i - (r.length-1)/2) * (NW + HG);
+  xy[id] = { x, y: PAD + li*(NH+VG) };
+}));
+
+const svg = document.getElementById("graph");
+svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+svg.setAttribute("width", W); svg.setAttribute("height", H);
+const NS = "http://www.w3.org/2000/svg";
+const el = (t, a, p) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); p && p.appendChild(e); return e; };
+el("rect", {x:0, y:0, width:W, height:H, class:"bg"}, svg).addEventListener("click", () => select(null));
+const gEdges = el("g", {}, svg), gNodes = el("g", {}, svg);
+const edgeEls = [];
+nodes.forEach(n => n.deps.forEach(d => {
+  const a = xy[n.id], b = xy[d];
+  const x1 = a.x, y1 = a.y + NH, x2 = b.x, y2 = b.y, my = (y1 + y2)/2;
+  const p = el("path", {d:`M${x1},${y1} C${x1},${my} ${x2},${my} ${x2},${y2}`, class:"edge"}, gEdges);
+  edgeEls.push({from:n.id, to:d, el:p});
+}));
+const nodeEls = {};
+const short = s => s.length > 22 ? s.slice(0, 21) + "…" : s;
+nodes.forEach(n => {
+  const {x, y} = xy[n.id];
+  const g = el("g", {class:"node", tabindex:"0", role:"button", "aria-label": n.label}, gNodes);
+  el("rect", {x:x-NW/2, y, width:NW, height:NH, rx:4, stroke:`var(--g${gi(n.group)})`}, g);
+  el("rect", {x:x-NW/2, y, width:4, height:NH, rx:1, fill:`var(--g${gi(n.group)})`, stroke:"none"}, g);
+  const t = el("text", {x:x+2, y:y+NH/2+4, "text-anchor":"middle"}, g); t.textContent = short(n.label);
+  el("title", {}, g).textContent = `${n.label}\n${n.stmt}`;
+  g.addEventListener("click", e => { e.stopPropagation(); select(n.id, true); });
+  g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); select(n.id, true); } });
+  nodeEls[n.id] = g;
+});
+
+/* ---------- legend ---------- */
+const legend = document.getElementById("legend");
+let groupSel = null;
+GROUPS.forEach((g, i) => {
+  const b = document.createElement("button");
+  b.setAttribute("aria-pressed", "false");
+  b.innerHTML = `<span class="sw" style="background:var(--g${i})"></span>${g}`;
+  b.addEventListener("click", () => {
+    groupSel = groupSel === g ? null : g;
+    legend.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b && groupSel ? "true" : "false"));
+    select(null);
+    if (groupSel) Object.entries(nodeEls).forEach(([id, e]) => e.classList.toggle("dim", byId[id].group !== groupSel));
+  });
+  legend.appendChild(b);
+});
+
+/* ---------- cards ---------- */
+const layersEl = document.getElementById("layers");
+const cardEls = {};
+const order = [...nodes].sort((a,b) => gi(a.group) - gi(b.group) || layer[a.id] - layer[b.id]);
+GROUPS.forEach((g, i) => {
+  const items = order.filter(n => n.group === g);
+  const sec = document.createElement("section"); sec.className = "layer";
+  sec.innerHTML = `<div class="layer-head"><h2 style="font-size:20px"><span class="sw" style="display:inline-block;background:var(--g${i});margin-right:8px"></span>${g}</h2><span class="n">${items.length} nodes</span><p>${GDESC[g]}</p></div>`;
+  const cards = document.createElement("div"); cards.className = "cards";
+  items.forEach(n => {
+    const c = document.createElement("article"); c.className = "card"; c.id = "n-" + nodes.indexOf(n);
+    c.style.setProperty("--c", `var(--g${i})`);
+    const chips = ids => ids.map(d => `<button class="chip" data-id="${d}">${byId[d].label}</button>`).join("");
+    c.innerHTML =
+      `<h3><span>${n.label}</span><span class="ref">≈ ${n.paper}</span></h3>` +
+      `<p class="stmt">${n.stmt}</p>` +
+      `<div class="lean">${n.kind} ${n.name}</div>` +
+      `<div class="loc"><span>${n.file.replace("NavierStokes/","")}:${n.line}</span><span>cone ${fmt(n.cone)} lines</span></div>` +
+      `<div class="bar" title="share of the proof in this node's dependency cone"><i style="width:${(100*n.cone/maxCone).toFixed(1)}%"></i></div>` +
+      (n.deps.length ? `<div class="deps">uses ${chips(n.deps)}</div>` : `<div class="deps">uses no other blueprint node (leaf of this view)</div>`) +
+      (users[n.id].length ? `<div class="deps">used by ${chips(users[n.id])}</div>` : "");
+    cards.appendChild(c); cardEls[n.id] = c;
+  });
+  sec.appendChild(cards); layersEl.appendChild(sec);
+});
+layersEl.addEventListener("click", e => { const b = e.target.closest(".chip"); if (b) select(b.dataset.id, true); });
+
+/* ---------- selection ---------- */
+function closure(id, next) { const s = new Set([id]), st = [id]; while (st.length) next(st.pop()).forEach(x => { if (!s.has(x)) { s.add(x); st.push(x); } }); return s; }
+function select(id, scroll) {
+  Object.values(nodeEls).forEach(e => e.classList.remove("sel", "dim"));
+  Object.values(cardEls).forEach(e => e.classList.remove("sel"));
+  edgeEls.forEach(e => e.el.classList.remove("hi", "dim"));
+  if (!id) return;
+  groupSel = null; legend.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", "false"));
+  const down = closure(id, x => byId[x].deps), up = closure(id, x => users[x]);
+  const keep = new Set([...down, ...up]);
+  Object.entries(nodeEls).forEach(([k, e]) => e.classList.toggle("dim", !keep.has(k)));
+  nodeEls[id].classList.add("sel"); cardEls[id].classList.add("sel");
+  edgeEls.forEach(e => {
+    const on = (down.has(e.from) && down.has(e.to)) || (up.has(e.from) && up.has(e.to));
+    e.el.classList.toggle("hi", on); e.el.classList.toggle("dim", !on);
+  });
+  if (scroll) {
+    const box = svg.parentElement, x = xy[id].x;
+    box.scrollTo({ left: Math.max(0, x - box.clientWidth/2), behavior: "smooth" });
+    cardEls[id].scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "nearest" });
+  }
+}
+</script>
+
+</body>
+</html>

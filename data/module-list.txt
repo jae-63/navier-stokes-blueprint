@@ -1,0 +1,597 @@
+  3247 CorrectionStep | Exact field bookkeeping for one correction cycle
+  2689 CorrectionInitialization | Construction of the initial correction fields
+  2316 InitialPhysicalData | The actual initial primary potential and its physical copies
+  2310 VariableGaugeMean | The actual similarity-dependent mean gauge
+  2119 BaseResidual | Residual and axis values of the asymptotically summed slow base
+  1937 NominalProfile | A common witness for nominal-profile assembly
+  1848 TransitionRamp | The stock-driven ACT continuation and its final two ramps
+  1775 PulseCone | The actual pulse contribution to the outgoing stress cone
+  1774 ActivationContinuation | The relaxed continuation after the initial activation
+  1669 ActualWaveRegularityData | Concrete qualitative data for the actual correction waves
+  1628 OutgoingEntranceCone | Actual outgoing histories through the axial drop
+  1598 ActualPrimaryCoherence | Coherence of the constructed primary waves
+  1588 GlobalSlowProfiles | Globalization of the positive slow profiles
+  1455 ActualPrimaryBounds | Uniform estimates for the chosen primary waves
+  1437 TailCone | The actual outgoing tail and its cone estimates
+  1434 ActualParticularDynamics | Exact dynamics of the actual particular correction
+  1308 TerminalHistoryBridge | The same compensated histories and the terminal backward stress
+  1287 SlowBorelBase | Constructing the slow asymptotic base from smooth coefficient data
+  1256 NominalConeAssembly | Cone coordinates of one actual nominal profile
+  1255 ModulatedHistories | Actual histories and moment repair for radial modulation
+  1245 TerminalPressure | Canonical pressure of the physical terminal heat tail
+  1240 PhysicalGraphBounds | Physical derivatives of the native graph
+  1207 PrimaryPulseBounds | Weighted bounds for the actual primary pulses
+  1197 ActualParticularStageControls | Actual particular-wave data on the active label-band pairs
+  1185 NaturalEntrance | Entrance estimates for the actual natural profiles
+  1180 AssembledSlowBase | Assembling the actual global slow coefficients and their common base
+  1159 TerminalEdgeFactor | Actual terminal stress factors at the outer edge
+  1144 ModulatedCone | The true cone after radial modulation
+  1107 ShapeTransition | The explicit shape transition and its reset-prefix debts
+  1102 ActualSignedStageControls | Native controls for the actual signed correction
+  1086 HarmonicResidual | Finite harmonic extraction of the actual cylindrical residual
+  1084 ReferenceBounds | Bounds for the actual reference continuation
+  1081 RepairConeBounds | The actual restore and five-row repair interval
+  1068 ActualInitialization | The actual initialized correction state
+  1067 ActualPrimaryCovariance | Covariance of the fixed physical primary family
+  1064 HeatSwitchCone | The compensated heat switch preserves the outgoing cone
+  1054 SlowResidualMatching | Finite slow residuals and their radial stress primitives
+  1048 UniformAngularReset | Uniform applicability of the angular reset
+  1046 ActualSignedPhysicalData | Physical data of the actual native signed copies
+  1044 PulseAmplitude | Actual pulse energy and its scalar amplitude
+  1026 ActualCycleResidualBounds | Residual estimates from the actual correction-cycle invariant
+  1019 SlowRecursion | Local slow-order recursion from actual lower profiles
+  1010 LiftedMeanResidual | Exact angular averages of the lifted correction residual
+   993 ActualPrimaryDynamics | Exact dynamics of the selected primary pulses
+   988 LocalizedWaveBounds | Wave bounds from primitive jets on native support cells
+   971 ActualCandidateAssembly | Literal physical data for the actual candidate
+   962 ActualMeanPhysicalData | Physical mean fields glued from their actual valid bands
+   950 ModulatedProfileAssembly | Modulation of one actual nominal profile
+   943 ActiveAnnulusWeight | One flat weight on the active annulus
+   940 BasePhaseGeometry | Base estimates imply the actual pulse geometry
+   922 ActualSignedGeometry | Geometry of the actual prepared primary charts
+   899 OutgoingPulseBounds | Quantitative bounds for the constructed outgoing pulse
+   895 ActualInitialExcluded | Excluded errors of the actual initialized state
+   893 PrimaryCopyBounds | Weighted native estimates for the constructed primary copies
+   892 MatchingConeBounds | Cone bounds through the shape transition and moment repair
+   887 MeanRankUpdate | The physical five-row mean update
+   883 ActualCycleAssembly | The actual finite signed-wave assembly
+   883 LabelSumBounds | Uniform weighted bounds for actual label sums
+   877 PhysicalMeanDomain | Mean reconstruction on an open slow domain
+   868 ActivationHolomorphic | A common holomorphic parameter neighborhood through initial activation
+   865 PhaseEstimates | Quantitative estimates for the actual pulse normal
+   862 NilpotentVolterra | Regular Volterra inverses and the sparse parameter-derivative system
+   857 ActualParticularCoherence | Coherence of the actual particular increment
+   849 FiveProfileMoments | Five actual profile moments on a reserved positive patch
+   837 PrimaryTargetBounds | Actual primary covariance and the flat target
+   836 ActivationCone | Initial activation cone estimates
+   834 ActivationStocks | Actual lag stocks during the activation ramp
+   831 PeriodizedWaveBounds | Whole-lift bounds from the actual native copies
+   824 LeadingStressWeights | Weighted bounds for the actual leading stress
+   801 PhaseJetBounds | Uniform slow jets of the actual phase geometry
+   798 SlowExpansionResidual | Finite slow expansions and their physical residuals
+   792 ExtendedHeatDebts | Literal heat debts on an open physical parameter domain
+   783 OutgoingSchedule | Constructed outgoing profiles through the axial pulse
+   781 ActualBaseResidual | The actual fixed-base residual in every common chart
+   767 LocalSignedRequest | A physical signed request on its moving radial shell
+   763 ActualCurrentParticularBounds | Quantitative bounds for actual current-band particular fields
+   757 ParticularWaveBounds | Particular waves from the actual forced copy-path solve
+   743 EntranceAlignedBase | A slow base whose cutoffs are aligned with the natural entrance
+   741 PhysicalResidualJetBounds | Physical jets of the actual finite-state residual
+   740 PhysicalResidualNaturality | Naturality of the actual lifted residual coefficients
+   739 ActualCurrentParticularPhysical | Physical fields of the actual current-band particular solve
+   732 SlowStressSupport | Positive slow-order tangential stress support
+   730 PositiveAxisSystem | Explicit positive-order axis matrices
+   728 SmoothFamilyTorusInverse | Actual torus inversion for smooth finite-dimensional parameter families
+   717 NativeBandExtension | Smooth attachment at the native dyadic band boundaries
+   711 MeanIncrementBounds | Changes of the literal mean equations under an actual mean increment
+   711 ActualPhaseDefect | The material defect of the actual primary chart phase
+   708 BaseChartJets | Actual summed base fields in normalized band charts
+   706 LoopVariance | The actual exponential tilt variance
+   703 FirstOrderBaseEdge | The first stress coefficient on the terminal collar
+   693 ActualParticularCycleData | Particular-wave data for the actual correction cycle
+   691 PhysicalResidualBridge | The physical residual of a scaled graph pullback
+   682 MatchingDebtBounds | Quantitative bounds for the actual five-row matching debt
+   680 LocalRankDefect | Rank correction on the actual open slow domain
+   679 OutgoingTail | Constructed flattening, release, and terminal power tail
+   676 PhysicalCurlCovariance | Physical covariance of the actual wave curl
+   673 ReferencePath | The same-radius reference continuation
+   673 SignedMeanGain | The mean gain of the actual signed wave update
+   671 GaugeAliasDecay | Arbitrary decay of the actual moving-gauge compactification alias
+   667 ActualCyclePreservation | Preservation by the actual correction cycle
+   667 OutgoingHistories | Actual histories of the corrected outgoing fields
+   662 ParticularWaveAssembly | Actual particular-wave assembly
+   655 ActualSignedPhysicalCoherence | The canonical signed physical family and its current-band realization
+   651 MovingFrameODE | The actual moving tangent frame
+   643 TerminalStress | Terminal heat tails and backward stress
+   635 BaseContextAssembly | The correction context of the actual slow base
+   630 WeightedODEJets | Weighted estimates for actual parameter derivatives of linear ODE solutions
+   630 HarmonicWaveInteraction | Actual harmonic wave-update interactions
+   625 RenormalizedHeatMoment | The renormalized angular moment and physical axial viscosity
+   620 ActualCycleCoherence | Coherence of the actual correction recurrence
+   619 ActualSignedPhysicalBinding | The actual signed family at its native reference bands
+   618 AxisOperators | Actual bounded operators on the compatible natural-axis coefficient space
+   618 ActualParticularControl | Modal inputs for the actual residual inverse
+   611 ReferenceJetBounds | Ordered jet bounds for the actual reference path
+   610 ActualInitialCoherence | Coherence of the literal initialized state
+   609 TransportPrimitive | Actual shifted transport primitives
+   606 TailEnergyBounds | Energy of the constructed outgoing tail
+   600 GaugeMomentBalances | Measured moment balances in the actual moving pressure gauge
+   598 StressActivation | Actual initial stress activation
+   598 SignedCopyBounds | Uniform native-cell bounds for actual signed coefficients
+   596 RadialHeatProfile | The radial heat continuation profile
+   596 PeriodicUniqueness | Classical uniqueness for periodic Navier--Stokes fields
+   596 PressureStream | Pressure and divergence reconstruction with the exact compactification error
+   595 AxisContraction | The nonlinear natural-axis fixed point
+   584 LocalPhysicalCopyBounds | Physical copy bounds from local native smoothness
+   582 PhysicalWaveSum | Physical waves on common covers and locally finite label sums
+   579 NaturalAxisBridge | From the coefficient fixed point to actual natural-axis profiles
+   566 StateMomentBalances | Actual state moment balances
+   565 PrimaryRepresentatives | Actual grid representatives and uniform primary reference parameters
+   563 HeatTailHistoryLimits | Actual history limits on the pure heat tail
+   560 WeightedRadialPrimitive | Uniform flat-weight estimates for radial primitives
+   559 ActualInitialMean | Mean estimates for the chosen initial primary family
+   558 ActualSignedNativeBounds | Joint native bounds for the actual signed physical sources
+   554 PositiveAxisExistence | Actual positive-order axis solutions
+   553 RadialPullback | Physical power-coordinate pullback of the weighted radial inverse
+   553 GluedStageEstimates | Stage estimates with the current-band particular fields
+   548 SquaredPartition | Concrete squared partitions on the line and on slow-coordinate grids
+   544 VolterraParity | Symmetric extension and parity for the actual Volterra solution
+   540 ActualInitialMeanEquation | The actual initialized mean equation and incompressibility
+   540 CutStageEstimates | Physical jet estimates for the actual diagonal cutoff stages
+   538 PhysicalMeanJetBounds | Physical jets of coherent mean fields
+   537 MeanChartCompatibility | Naturality of the actual mean operators
+   537 PartitionedCovariance | Leading covariance of actual partitioned, separated slot fields
+   536 OutgoingCone | One clean outgoing cone on one reset witness
+   535 CorrectionAnalyticStep | Analytic preservation for the literal correction cycle
+   535 ActualCurrentWaveSupport | Support of the actual current-band waves
+   534 PulseLag | The actual outgoing pulse lag
+   529 TerminalCompensation | Three exact terminal compensation moments
+   528 ActualCandidateConstruction | The same initialized correction sequence and its physical prefixes
+   528 VolterraRegularity | Radial smoothness for the actual regular Volterra integral
+   524 PrimaryCovarianceBounds | Zeroth-order bounds for the actual primary covariance
+   521 HeatedOutgoing | The physical heat continuation with exact terminal compensation
+   519 AlignedProfileSpectralCone | The spectral cone of the actual aligned modulated base
+   519 ShapedWaitBounds | Actual shaped-hold errors with constants uniform in the small slope
+   519 ProfileHistories | Genuine smooth profile histories
+   516 NaturalProfile | Actual natural profiles in the original radial variable
+   514 GenericEndpointExtension | A dimension-independent smooth extension of a bounded-jet open strip
+   508 TrueConeLoop | Construction of the true-cone loop
+   508 BaseExterior | The actual pure-heat exterior of the summed slow base
+   504 ClosedNativeWaveIdentities | Actual wave identities at closed native-cell points
+   504 PositiveOrderMoments | Actual five-row repair at positive slow order
+   501 ActualGaussianCoverage | Gaussian coverage for the actual scaled particular solves
+   497 ActualSignedCoherence | Coherence of the literal signed correction
+   497 ScaledActualParticularControl | Complete controls for the scaled actual particular inverse
+   493 R3.PressureFlux | Canonical pressure flux
+   492 SlowFirstOrderEdge | The first slow-order stress at the terminal edge
+   489 CycleStateCoherence | Full-fiber coherence through the actual correction recurrence
+   486 PositiveRepresentatives | Positive-time representatives and the genuine stable inverse branch
+   486 FuturePressureBounds | Uniform future-pressure bounds for the actual outgoing schedule
+   485 TorusAverages | Actual torus and native-coordinate averages
+   484 CrossBasedMeanComposition | Mean composition with the actual signed cross covariance
+   478 ActualSignedCommonDynamics | Actual common signed-wave equations
+   477 TemporalMeanUpdate | The exact temporal mean update
+   475 PrimaryODE | Constructed primary pulse solutions
+   473 PhysicalCoordinateBounds | Fixed-order bounds for the physical similarity coordinates
+   469 ActualPhaseJetBounds | Ordinary jets of the selected primary phase
+   468 CylindricalResidual | Actual Cartesian differential operators in cylindrical coordinates
+   460 OutgoingProfile | A single outgoing profile before the heat-tail edit
+   457 NaturalAxisCoefficients | The actual fixed coefficients of the natural-axis problem
+   457 BaseStressClasses | Weighted classes of the actual base stress
+   454 TerminalCone | The full fully-switched terminal cone
+   451 VolterraAnalyticBounds | Actual analytic Volterra words for the slow axis recursion
+   448 ActualBaseVelocityBounds | Fixed losses for the actual physical slow velocity
+   446 CycleMeanEquation | The actual angular mean equation along the correction cycle
+   445 SmoothFourierData | Fourier coefficients of actual smooth periodic functions
+   443 SimilarityCoordinates | Analytic existence of the similarity coordinates
+   441 WaveEdgeExtension | Smooth zero extension across both moving radial edges
+   440 HeatTailEdit | The actual terminal heat edit and its integral debts
+   437 ExtendedHeatedOutgoing | An actual compensated outgoing profile on an open parameter neighborhood
+   435 IntervalCopyTransport | Copy transport from continuity on the anchored interval
+   434 PrimaryGeometryAssembly | Primary phase geometry for the constructed slow base
+   429 ParametricModulation | Joint periodic primitives and realization of the constructed true-cone loops
+   421 AxisHolomorphic | Holomorphic parameter extension of the evaluated axis space
+   420 ActualSignedWaveData | Physical wave data for the actual signed cycle fields
+   420 ActualPhysicalPrefixFields | Physical residual fields from the literal mixed prefixes
+   419 PulseEnergyHistory | Actual outgoing energy histories during the pulse
+   416 IntegratedMeanBalances | Integrated tangential balances from actual radial differential expressions
+   416 R3.ConservativeDifference | Conservative difference equations tested on compactly supported functions
+   416 CorrectedPressureBounds | Pressure through the actual angular reset
+   413 BoundaryAxisJets | Canonical axis jets without a negative squared-radius extension
+   409 ActualPhysicalStageBounds | Physical stage estimates from the actual native mean region
+   409 GrowingMode | The actual growing mode stays in a narrow cone
+   398 PhysicalSignedWave | Signed quotient waves from one physical primary reference
+   397 PulseCovariance | Concentration of actual pulse covariance columns
+   395 CurrentSignedCurl | The curl of the actual current signed potential
+   391 CurlClassBounds | Weighted classes of actual cylindrical curl corrections
+   390 ProfileSpectralCone | From the actual profile cone to the primary spectral cone
+   386 AxisEvaluationAlgebra | Actual profile equations for the coefficient operators
+   386 ActualMeanPotentialRealization | Actual Cartesian curls of the mean stream potentials
+   385 ActualSignedNativeRegularity | Native regularity of the actual signed cut sources
+   382 PhysicalResidualTZ | Physical residuals in the slow-coordinate order `(T,Z)`
+   378 SignedStressPrimitive | The actual compact signed-stress primitive
+   377 GaugeDebtIncrement | Measured debt changes for actual gauge updates
+   368 NaturalCoefficientBridge | The natural core solves the actual order-zero residual equations
+   366 TemporalStateCoherence | Naturality of the actual common-index temporal state update
+   366 ActivationBounds | Bounds for a shrinking activation ramp
+   366 ActualSignedMeanBinding | The actual signed mean cross and its physical scale
+   363 FlatKernelBounds | Derivative bounds for the normalized flat primitive kernel
+   363 R3.PressureRecovery | Pressure recovery for smooth finite-energy comparisons
+   361 AxisWeightEstimates | Concrete coefficient estimates for the natural-axis norm
+   359 StateReindex | Isometric reindexing of the actual correction state
+   357 LinearWaveResidual | Exact linear harmonic residual
+   357 ReleaseMoments | Actual angular history through the release and terminal tail
+   356 OutgoingDilation | Actual radial dilation of the constructed outgoing profile
+   355 CorrectedPulseAmplitude | Pulse amplitude after the actual angular-moment reset
+   355 UniformHarmonicInteraction | Uniform estimates for the actual harmonic interaction
+   347 ParametricTerminalCompensation | Terminal compensation for genuinely parameter-dependent debts
+   344 SlotGeometry | Rational auxiliary slots separated under bounded covering powers
+   341 CommonCoverSolve | Actual slot solves on a common torus
+   341 FinalSlowBase | The slow base on the actual entrance-to-terminal annulus
+   339 ActualSignedUnmaskedBounds | The actual signed coefficients with only the dyadic factor removed
+   338 GaugeStateCoherence | Coherence of the actual moving-gauge pressure reconstruction
+   337 ParticularCopyBounds | Joint native-copy bounds for the actual particular inverse
+   336 TorusInverse | Smooth Fourier series and directional inversion on the two-dimensional torus
+   336 BasePrefixIdentity | The curl of the finite slow potentials
+   334 ModulatedExterior | Exact exterior of the repaired modulated slow base
+   334 GermEndpointInputs | Endpoint inputs for physical fields assembled by germs
+   332 ActualCyclePeriodicity | Auxiliary periodicity of the actual correction coefficients
+   330 AxisEvaluation | Evaluation of the complete axis coefficient space
+   327 HarmonicFields | Finite integer-harmonic fields
+   327 SpacetimeGluing | Joint smooth gluing from matching normal time jets
+   326 PressureDatum | The pressure datum from a nonnegative weighted schedule
+   326 WeightedClasses | Indexed weighted classes of actual stripped derivatives
+   326 ResetEnergyBounds | Actual energy cost of the scheduled angular reset
+   325 PositiveTimeSignedData | Signed physical data from positive native time
+   321 MeanStateRegularity | Regularity of the actual mean equations on a moving annulus
+   321 ResidualStability | Stability of the actual Navier--Stokes residual under flat perturbations
+   320 SpatialBorelExtension | Jointly smooth Taylor–Borel extension of spatially smooth jets
+   319 SmoothLoop | Smooth periodic tilt functions and their actual integral moments
+   318 GlobalStressSupport | Stress confinement for the coherent repaired slow sequence
+   317 HarmonicCalculus | Actual differential calculus of a single harmonic
+   316 R3.ComparisonTimeAverages | Time averages of finite-energy fields
+   315 LocalResidualGrouping | Actual harmonic residual grouping on a valid open chart
+   315 TailGaugePotential | A radial gauge for the actual slow-base potential
+   314 FiveRowRank | The five-row rank repair on an unaltered power-law patch
+   311 LocalAxisymmetricResidual | Local Cartesian residual formulas for axisymmetric profiles
+   308 ZerothStressIdentity | The canonical zeroth stress is the explicit leading stress
+   303 R3.CompactEnergy | Energy of compactly supported fields on Euclidean three-space
+   301 UniformFourierAlias | Uniform seminorm bounds for families of exact Fourier aliases
+   299 PrimaryCopyBridge | The reconstructed forced solution is the actual copy solve
+   298 AxisSeries | Convergent series for the leading natural axis profile
+   296 PhysicalParticularWave | Actual reference particular waves in physical coordinates
+   296 AllBandBaseJets | Base-field jet bounds on every dyadic band
+   296 DiagonalResidual | Residual flatness from quantitative finite-stage data
+   295 AxisTailRegularity | Regular finite tail coefficients at the symmetry axis
+   293 MixedPeriodicAssembly | Spatial localization of a curl field and a direct angular field
+   292 ActualWaveRegularity | Qualitative regularity of the actual finite wave updates
+   292 R3.PressureFluxTest | The compact test function in the pressure flux
+   292 PeriodicSobolev | A concrete periodic H³ supremum bound
+   291 ReservedPatches | Four disjoint reservations on the actual outgoing shaped wait
+   290 ParametricKernelBounds | Joint parameter derivatives of the normalized flat kernel
+   289 ParametricEvenDescent | Joint smoothness of even descent
+   288 AxisResolvent | The natural-axis resolvent from factorial decay of radial shifts
+   286 ParticularPaddedBackground | Actual particular background on the full retained carrier
+   285 AxisCoefficientSpace | A complete coefficient space with compatible actual derivatives
+   283 ActualMeanStageData | Angular stage data for the actual physical means
+   282 MovingMomentBounds | Actual moments on the moving profile strip
+   281 AngularMomentReset | A pressure-neutral angular-moment reset
+   279 ActualSignedOutputBounds | Actual signed outputs from native support estimates
+   275 CurrentParticularLabelBounds | Physical jet bounds for the actual current particular label sum
+   271 ActualCarrierGeometry | Geometry of the actual broad primary carrier
+   270 SlowBaseEndpoint | Endpoint extensions of the actual summed slow base
+   270 ParametricHeatTail | The physical heat edit: diffusion is `1 - eta^2`
+   269 HarmonicSourceSupport | Support of the actual harmonic residual supplied to a copy solve
+   269 RankStateCoherence | Coherence of the actual five-row rank correction
+   267 LocalizedMeanInteraction | Mean interactions from support-local phase estimates
+   266 ActualValidBandWaves | The actual particular waves on valid physical charts
+   266 PowerMomentMatrix | Generalized-power evaluation matrices
+   265 PrimaryFieldAssembly | Assembly of the actual primary tangent field
+   264 DirectAngularDiagonal | Direct angular means in the physical diagonal
+   262 AnalyticCoefficientBounds | Uniform analytic input for the natural-axis coefficient space
+   262 HarmonicMeanInteraction | Actual harmonic residual changes under a mean increment
+   259 SpacetimeEndpoint | Joint spacetime endpoint regularity from locally uniform derivative limits
+   258 ActualSignedPhysicalZeros | Zeros of the actual signed physical coefficients
+   257 ActualSignedExterior | Exact exterior support of the actual signed physical fields
+   257 PolarCharts | Four genuine polar charts with uniform finite-jet bounds
+   256 SimilarityProfile | Actual derivatives of reconstructed similarity profiles
+   255 RadialModulation | Rapid radial modulation
+   251 SignedWaveUpdate | Constructed signed wave increments
+   251 ActualCoreSupport | The actual initial support retains its radial and native dyadic cores
+   250 ViscousPropagator | Energy estimates for the viscous two-mode equation
+   249 CyclePhysicalPrefixes | Physical finite prefixes of the actual correction cycle
+   249 CommonCoverClass | Uniform stripped jets on a common cover
+   247 PeriodicIntegration | Integration of periodic fields on the unit cube
+   246 HeatSwitchHistoryDerivatives | Derivatives of the actual compensated heat histories
+   246 ChartScales | The actual native chart scales
+   239 SmoothParameterIntegral | Smooth parameter integrals with local integrable majorants
+   239 UniformBlockBounds | Uniform coefficient bounds for the literal harmonic blocks
+   238 EdgeWeightJets | Genuine derivative bounds for polynomially weighted Gaussian edges
+   235 ActualCurrentParticularAssembly | The Cartesian curl of the actual finite particular-wave sum
+   231 StressAlgebra | Exact radial stress identities
+   231 CopyAngularInvariance | Angular invariance of constructed stripped copy and curl coefficients
+   231 ParametricODE | Smooth dependence of finite-interval linear ODE solutions
+   230 ActualSlowAxis | The actual natural/ACT base in the all-order local axis recursion
+   229 BaseRankPatch | The reserved mean-rank patch of the actual summed base
+   228 R3.RieszTestOperators | Differential identities for the Riesz test operators
+   227 R3.PressureTestBounds | Fourier bounds for pressure test functionals
+   227 AxisReference | Identification and positivity of the actual natural-axis reference
+   226 CorrectionState | Concrete fields and residuals for the correction construction
+   225 ActualSignedControl | Controls from the actual shared primary construction
+   225 R3.PressureFunctionals | The pressure-difference functional on Schwartz tests
+   224 ActualSignedDynamics | Exact dynamics of the selected signed unit
+   223 WeightedQuotients | Square roots and signed quotients from weighted derivative bounds
+   221 ModulatedStockBounds | Quantitative stock bounds from actual field and history data
+   220 R3.LocalizedFluxEstimates | Non-pressure terms in the localized difference energy balance
+   220 GaugeMassPreservation | Local mass preservation for the actual moving-gauge temporal update
+   220 GermCandidateAssembly | Mixed candidate assembly from primitive axis zero germs
+   219 ActualSignedGaussian | Gaussian cutoff errors of the actual signed correction
+   219 ActualSignedPotentialCoherence | Current-band signed vector potentials and pressure modes
+   217 HolomorphicFamily | Joint real smoothness of smooth families of holomorphic disk functions
+   217 ActualSignedNativeProfiles | The actual signed carrier profiles on their Prepared regions
+   216 CopySolveCompatibility | Compatibility of the actual copy-path solve with a common-cover change
+   215 DependentSignedPhysicalFamily | Signed physical families with label-dependent phase domains
+   215 BorelExtension | A constructed compactly supported Taylor–Borel extension
+   212 ActualSignedUnmaskedBinding | Exact native-source factorization for the actual signed family
+   212 CurrentPhysicalChartJets | Uniform jets of the actual current physical chart
+   210 MixedDiagonalResidual | Residual estimates for the mixed diagonal sum
+   208 FlatDyadicExtension | Literal flat dyadic products from locally bounded interior jets
+   207 RankStateBounds | Actual moving-strip bounds for the rank increment
+   207 SmoothPathFamily | Jointly smooth functions as smooth families of continuous paths
+   207 DefectIncrementBounds | Actual defect changes under the slow rank update
+   206 GaussianEnvelope | Gaussian bounds from a decreasing instantaneous rate
+   206 ResidualRegularity | Regularity and locality of the concrete Navier--Stokes residual
+   205 PhysicalClassBounds | Uniform weighted coefficients and physical wave sums
+   203 R3CompactCandidate | The compact whole-space fields behind the periodic construction
+   203 OffplaneJetExtensions | Off-plane endpoint extensions from actual raw jets
+   202 R3.RadialKernelBounds | The radial majorant of the cutoff commutator
+   201 MaximalLifespan | Conditional maximal classical lifespan of the candidate
+   200 ActualParticularGaussian | The weighted Gaussian error of the actual particular update
+   199 SlotColoring | Physical grid labels, bounded degree, and an explicit finite coloring
+   196 LocalizedMomentRepair | Constructed smooth moment repairs
+   196 LabelSupportPreservation | Preservation of the actual closed carrier of a harmonic label
+   196 EvenSmoothDescent | Descent of an even smooth curve through the square map
+   195 PeriodicLocalization | Spatial periodization in physical Euclidean three-space
+   194 ActualPolarCoverage | Actual polar graph coverage of the nominal active annulus
+   194 ErrorHarmonics | Explicit harmonic witnesses for the retained error fields
+   193 MeanStageRegularity | Primitive regularity under the actual mean stages
+   192 SmoothCutoffs | Constructed smooth cutoffs for the diagonal sum and time switch
+   191 R3.WeightedInterpolation | Interpolation for the comparison cutoff weights
+   187 PhaseCalculus | The actual slot phase and its material defect
+   187 DiagonalScale | Diagonal cutoff scales from actual logarithmic limits
+   187 R3.WeightedSobolev | Weighted Sobolev estimates for compact cutoffs
+   186 R3.LocalizedTensorBounds | Weighted tensor bounds for the localized pressure
+   186 EndpointCoordinates | Actual similarity coordinates across the nonzero axial endpoint
+   186 R3.ComparisonFiniteEnergy | Finite-energy bounds for whole-space comparison
+   185 ActualParticularPotentialCoherence | Coherence of the actual current-band particular potential
+   183 ActualReferenceRebase | Native reference data from the actual common-cover state
+   182 PastExtension | Extending activated physical fields to the whole open past
+   181 MixedDiagonalSchedule | One physical diagonal schedule for potentials, direct fields, and pressure
+   181 NaturalAxisRange | The full numerical axis parameter range in the current manuscript
+   180 ActualCarrierTransportBase | The actual broad carrier in the canonical particular coordinates
+   180 LocalMeanPhysicalBounds | Physical mean estimates on the actual normalized slow region
+   179 ActualCycleExcluded | Every-power bounds for the literal cycle's axisymmetric alias
+   178 FlatPrimitiveFactor | The transformed integral for a terminal flat primitive
+   178 ScaledParticularFrameJets | Geometric jets for the actual scaled particular inverse
+   178 CandidateConsequences | Consequences of the actual candidate fields
+   175 ParametricRadialExtension | Joint smooth extension of even radial profiles
+   175 CurrentPhysicalModeGerms | Normalized polar germs of the actual current particular modes
+   174 ActualParticularBackground | Local background bounds for the actual particular harmonics
+   174 R3.PairedKernelBound | An integrable majorant for the paired commutator kernel
+   174 GaussianTailFlat | The actual Gaussian slot-cutoff errors
+   174 SpatialLocalization | Spatial localization through actual Cartesian potentials
+   174 R3.PressureTemporalIdentity | Compact time tests of the conservative pressure identity
+   173 AxisymmetricFields | Smooth axisymmetric fields in Cartesian coordinates
+   173 AxisSourceRegularity | Radial divisibility and regular slow-order sources
+   173 ConstructedSlowBase | The actual constructed slow base
+   173 ActualWaveCoefficientPeriodicity | Deck translations of the actual wave-block coefficients
+   172 R3.HeatKernelFourier | Fourier representation of the heat kernel
+   172 R3.HeatKernelTimeBound | Integration in time for the heat-kernel Hessian
+   172 R3.SchwartzCompactApproximation | Compact support approximation in Schwartz space
+   169 ActualCopySliceRegularity | Continuity on the actual finite tangent-copy intervals
+   168 MixedDiagonalExtensions | Endpoint extensions for locally constructed diagonal stages
+   164 R3.ComparisonCutoffs | Smooth spatial cutoffs for whole-space comparison
+   157 DiophantineGraph | Diophantine bounds for the manuscript's graph directions
+   157 R3.ViscosityScaling | Spatial changes of viscosity preserving the singular time
+   156 ParametricFlatFactor | Joint dependence of terminal flat primitive factors
+   155 PhysicalCopyBounds | Physical bounds for locally finite native copies
+   155 CompactSmoothFamily | Jointly smooth functions as smooth families on a compact set
+   154 ComparatorDefinitions | Independent definitions for the Navier–Stokes Comparator submission
+   152 ActualSignedFamilySupport | Support and local smoothness of the actual signed copy family
+   152 ParametricRephase | Jointly smooth rephasing by positive periodic densities
+   152 DiagonalJetBounds | Quantitative jets of the actual diagonal sum
+   151 MeanMomentBounds | Actual slow moments of flat weighted mean fields
+   151 RadialAlias | The translated radial integral and repeated integration by parts
+   150 ActualCycleParameters | Literal cycle parameters on the initialized labels
+   148 LeadingStress | The leading stress and its genuine divergence
+   148 JointODE | Joint parameter and current-time smoothness for linear ODE solutions
+   148 SmoothCovariance | Smooth positive covariance solves
+   148 SignedCrossDefectClass | Weighted bounds for the literal signed cross-covariance defect
+   147 ActualSignedPhysicalGeometry | Geometry for current signed waves in physical polar charts
+   147 ActualPeriodizedSignedRealization | Actual native-copy realization of the signed reference wave
+   146 R3.RieszL2Bounds | The `L²` bound for Riesz operators on Schwartz tests
+   145 TorusMeanRequestRebase | A common-torus signed request with native wave geometry
+   145 PhysicalStageBounds | Raw physical stage estimates from native wave and mean data
+   144 ActualSignedGaussianCoherence | Full-fiber coherence of the actual signed Gaussian error
+   144 HeatProfileExtension | A genuine smooth extension of the radial heat profile
+   144 AxisHolomorphicJoint | Joint smoothness of the actual holomorphic axis profile
+   144 R3.PressureRecoveryHelpers | Compact tests used in pressure recovery
+   144 CauchyRestriction | Bounded Cauchy differentiation between closed disks
+   142 PeriodicPhaseAssembly | A periodic phase with the actual native clock germs
+   140 PrimaryResidualClass | Initial primary residual classes
+   140 R3.HeatKernelCancellation | Cancellation in the heat-kernel commutator
+   138 FlatCutoff | A concrete smooth exponential-flat edge
+   138 R3.WeakTimeContinuity | Weak time continuity from uniform spatial `L¹` bounds
+   137 NaturalAxisData | The fixed real natural-axis data
+   137 CommonBaseContext | The actual slow base on a coarsest common integer cover
+   137 MixedAxisPreservation | Axis preservation for the mixed physical diagonal
+   135 BaseRadialJets | The actual normalized radial base component
+   135 R3.ComparisonYoung | Scalar absorption for the whole-space comparison estimate
+   134 SchedulePressure | The pressure datum of the constructed outgoing angular schedule
+   133 AnnularEndpoint | Terminal extensions from a common shrinking outer support
+   133 ComparatorBridge | Coordinate and viscosity bridge to the periodic Clay statement
+   132 R3.WholeSpaceComparisonClosure | Closing the whole-space comparison estimate
+   130 UniformCone | Compact-family uniformity and stability of the stress cone
+   130 R3.PressureFluxIdentity | From scalar pressure-gradient identification to the cutoff pressure flux
+   130 R3.LocalizedDifferenceEnergy | The compactly weighted difference-energy identity on R³
+   130 R3.ComparisonRateBound | A uniform rate bound from the localized energy estimate
+   129 SpatialCurl | The physical Euclidean curl
+   129 AnalyticPrimitive | An actual holomorphic primitive on a convex open set
+   129 TangentODE | Existence on finite intervals for the projected tangent equation
+   128 R3.CompactTimeIntegral | Time derivatives of integrals with uniform compact spatial support
+   127 RadialFluxResidual | Radial flux coordinates for the actual axisymmetric residual
+   125 SimilarityHomogeneity | Homogeneity of the actual similarity coordinates
+   125 R3.CompactComparisonBounds | Constants supplied by the compactly supported comparison solution
+   124 InitialNativeRegularity | Full-chart regularity of the initial native copy coefficients
+   122 R3.SmoothSobolevL6 | Homogeneous Sobolev bounds for smooth square-integrable functions
+   121 PhysicalStageSupport | A common shrinking support for actual physical increments
+   120 ParametricTorusInverse | The actual smooth torus inverse with an external real parameter
+   120 ResidualPolarGraph | Local polar inverse of the physical residual graph
+   120 PeriodicPaperTheorem | The full periodic corollary of the paper
+   119 CartesianCopySource | Cartesian source classes for actual native copies
+   119 GlobalBaseError | Joint flatness of the actual excluded slow-base error
+   119 GaugeExcludedBounds | Full-vector bounds for the actual moving-gauge excluded aliases
+   116 FlatCovariance | Covariance amplitudes across an exponential-flat edge
+   116 ActualCurrentCarrierJets | Uniform phase jets for the actual current-chart copies
+   116 LinearWaveBounds | Weighted bounds for the actual linear wave remainder
+   111 R3.ParabolicScaling | Parabolic compression with singular time fixed at one
+   111 ActualSignedReferenceGeometry | Reference geometry of the actual signed family
+   111 ActualParticularMeanGain | The actual post-particular mean data
+   110 R3.FourierSobolevWeights | A polynomially weighted Fourier embedding
+   109 R3.RieszHeatRepresentation | Heat multipliers for the double Riesz transform
+   109 PeriodizePDE | Navier--Stokes equations under spatial periodization
+   108 MomentRepair | Finite moment repair
+   108 ActualIntermediateDebtBounds | Measured debt before the actual rank correction
+   107 WaveStateRegularity | Regularity of covariances of the actual harmonic state
+   105 MixedFiniteBackground | Finite background bounds from the raw increments
+   105 R3.ActualCandidate | The full whole-space candidate from the selected construction
+   105 LocalizedGaussianBounds | Gaussian cutoff errors from support-local primitive estimates
+   105 R3.ProblemStatement | The whole-space assertion of Part II, Theorem 1.1
+   104 WaveInteractionBounds | All-jet bounds for actual nonlinear wave interactions
+   103 ActualExteriorPrefix | Exterior identities for the actual finite physical prefixes
+   102 ActualIterationLedger | The arithmetic ledger for actual correction stages
+   102 NativePrincipalEquations | Principal equations on actual native cells
+   101 HarmonicStructurePreservation | Structure preserved by actual harmonic block addition
+   101 AxisymmetricResidualGrouping | Grouping the actual residual with an independent axisymmetric alias
+   101 GaussianErrorNaturality | Naturality of the actual Gaussian cutoff error
+   100 SolenoidalDiagonal | Smooth solenoidal diagonal sums
+   100 CandidateFromLimits | Conditional candidate construction from actual residual derivative limits
+    99 ActualMeanExterior | Exact exterior vanishing of the actual mean fields
+    97 UniformPrimaryWeights | Uniform primary weights and curl estimates
+    97 JointResidualLimits | Endpoint limits from actual joint jets and local one-sided extensions
+    97 JetBounds | Bounds for actual Fréchet jets
+    96 ConeAlgebra | Exact algebra of the stress cone
+    95 AxisymmetricResidual | Cartesian Navier--Stokes residual in regular axisymmetric coordinates
+    94 R3.HeatKernel | The three dimensional heat kernel
+    94 FourierAlias | Exact radial aliases and Fourier suppression
+    94 PeriodicPaperScalingSupport | Support bounds for the compressed fields used on the torus
+    92 EndpointExtension | Smooth gluing from matching one-sided derivative jets
+    92 ProblemStatement | OPEN target: the candidate forced Navier--Stokes construction
+    91 GaugeRadialResidualBounds | The radial residual of the actual moving pressure gauge
+    91 TimeLocalization | Time localization of the actual presingular fields
+    91 R3.ComparisonGronwall | Scalar closure of the whole-space comparison estimate
+    90 CurrentModeGeometry | Geometry of the actual current-mode evaluation point
+    88 R3.WholeSpaceUniqueness | Whole-space finite-energy comparison
+    87 ScheduledProfileChoice | A common scheduled profile below caller-supplied parameter bounds
+    87 WaveEnvelopeTransport | Source envelopes along an entire common-cover slot path
+    87 ScaledTangentTransport | Normal and clock transport of the actual tangent inverse
+    87 R3.LocalizedLaplacian | The Laplacian in a compactly weighted energy identity
+    86 R3.HeatKernelPairedBound | The paired estimate for the heat commutator kernel
+    85 FiniteHeadClass | Exact-weight exponent changes for finitely many initial bands
+    85 PeriodicViscosityUniqueness | Periodic classical uniqueness for every positive viscosity
+    85 ValidDyadicBandCover | Gluing on the actual open dyadic validity regions
+    84 Covariance | Two signed covariance slots
+    83 R3.HeatKernelCommutator | The pressure commutator
+    81 R3.HeatKernelFubini | Fubini after insertion of the cutoff difference
+    81 R3.HarmonicTestFunctionals | Harmonic functionals bounded in an inhomogeneous Fourier Sobolev norm
+    81 MixedCandidateAssembly | Candidate assembly from the actual finite-stage obligations
+    79 ScalarParticularSupport | Scalar-clock support of the actual particular solve
+    78 PeriodicPaperSupport | Support of the periodic construction on its fundamental cube
+    78 R3.RieszSymbolRegularity | Bounded Riesz symbols and smooth Riesz transforms of test functions
+    78 ActualSeedPeriodicity | Torus periodicity of the actual seed coefficients
+    78 PositiveTimeSignedLocalization | Localization of the actual signed inputs at positive native time
+    75 LocalAngularDiagonal | Direct angular diagonal from local raw data
+    74 R3.WeakFourierUniqueness | Weak uniqueness for the weighted Fourier representation
+    71 SimilarityApproach | The actual similarity scale at the singular point
+    70 CompactForceDecay | Decay of all derivatives of a smooth periodic force with bounded time support
+    70 ActualStageEstimates | Stage estimates for the fixed actual iteration
+    69 CompactSpatialForceDecay | Space-time decay from compact spatial and future time support
+    69 R3.FourierConvolution | An inverse Fourier multiplier as a convolution
+    65 Scaling | Exact core and carrier scaling
+    65 R3.ComparatorBridge | The full whole-space candidate implies the comparator statement
+    65 ModeSolenoidalReindex | Actual harmonic divergence under a change of product association
+    64 NativeCutoffJets | Jets of the literal transported native cutoff
+    64 R3.WholeSpaceEnergyLimit | Removing the spatial energy cutoff
+    63 LocalizedCurlRealization | Curl realization on native phase patches
+    62 PositiveTimeCopyFamily | Positive lift-time localization of actual copy amplitudes
+    62 R3.LocalizedTransport | Transport and pressure with a compact spatial weight
+    60 R3.ParabolicCalculus | 
+    60 NormalScaling | Normal, clock and amplitude rescaling in the tangent equation
+    59 SignedCovariance | Signed covariance updates with the constructed primary waves
+    58 PreparedOutgoing | One prepared outgoing profile and arbitrarily late nominal matching
+    57 OffplaneCorrectionExtensions | Primitive correction formulas at a nonzero axial endpoint
+    57 R3.GaussianMoments | Gaussian moments for Fourier differentiation
+    56 ResidualCalculus | Calculus of the physical Navier--Stokes residual
+    56 R3.ScalarEnergyBound | A scalar bound for the forced energy inequality
+    56 PeriodicViscosity | Global exclusion for positive-viscosity periodic solutions
+    54 R3.DelayedExtension | Smooth extension by zero to negative times
+    51 ActualSignedCurrentSupport | Omitted labels in the actual current signed fields
+    51 R3.ParabolicSupport | Support after affine time and spatial rescaling
+    51 R3.PositiveTimeForce | A smooth force cutoff separated from initial time
+    50 R3.FourierTestDerivatives | Spatial derivatives of Fourier test functions
+    49 PhysicalHeatCoordinates | The heat edit in the actual implicit physical coordinates
+    49 CoordinateAlgebra | Algebra of the manuscript coordinates
+    47 TangentProjection | Tangent projection and pressure cancellation
+    46 CurrentParticularPhysicalCoherence | Removing the native scales from the current particular modes
+    44 R3.LpNormTools | Real-valued whole-space `Lᵖ` norms
+    44 R3.SchwartzParseval | Fourier pairings and Parseval on Schwartz functions
+    44 R3.ParabolicEnergy | Energy and blowup under an affine parabolic change of variables
+    44 ValidBandGluing | A representative on the union of valid open charts
+    44 SignedPhysicalSumCalculus | Finite-support sums in physical coordinates
+    41 R3.SpatialSupportScaling | Compact support under spatial rescaling
+    40 R3.RieszLinearityDecay | Linearity and decay of Riesz test operators
+    40 SlowDivergence | The actual positive-order divergence primitive
+    39 InitializedPhysicalBackground | Initial physical velocity bounds from the actual base and native data
+    39 R3.RieszPairing | Pairings for the double Riesz transform on test functions
+    39 SmoothMomentRepair | Smooth dependence of quadratic moment repair
+    38 R3.GradientOperator | The differential operator norm and the coordinate gradient energy
+    37 ActualParticularRealization | Cartesian realization of the actual reference particular update
+    37 AxisPreservation | Preservation of the axis value under annular corrections
+    36 AxisProfile | Algebraic checks for the natural axis profile
+    36 MeanBoundsReindex | Exact transport of mean bounds and residual coefficient classes
+    35 R3.CompactForceBound | A uniform spatial square-integral bound for compactly supported forces
+    34 FlatPrimitive | Actual primitives of exponential-flat edges
+    34 R3.ActualPressureFlux | The actual pressure flux equals the canonical pressure flux
+    34 R3.TemporalTestUniqueness | Pointwise recovery from compact temporal tests
+    32 PeriodicPaperComparator | The periodic paper theorem implies the exact comparator statement
+    32 R3.SpatialEnergyScaling | Kinetic energy under spatial dilation
+    31 R3.CandidateBreakdown | A compact singular candidate excludes a global finite-energy solution
+    30 AnnularAuxiliary | +# Smooth auxiliary fields for an annulus
+    29 PulseGrowth | Reference pulse growth
+    29 ActualCycleGeometry | The actual fixed geometry for every correction cycle
+    27 LoopMoments | Exact moment algebra for the true-cone loop construction
+    25 R3.Theorem | Theorem 1.1: unconditional whole-space forced Navier–Stokes blowup
+    25 R3.HilbertFunctionalExtension | Hilbert-space representation of a functional bounded through an embedding
+    25 PeriodicComparatorSolution | The periodic comparator in the paper's coordinates
+    23 R3.ComparisonSetup | Common definitions for whole-space comparison
+    23 BlowupImplication | Conditional blow-up and obstruction to continuous extension
+    22 PeriodicResidualLimits | Actual residual limits after spatial localization and periodization
+    21 RadialSchedule | Scalar identities for the outgoing radial schedule
+    20 ExponentLedger | Arithmetic of the residual-order ledger
+    19 ComparatorR3Bridge | Viscosity normalization for the whole-space comparator
+    19 R3.CompactSchwartz | Compact smooth test functions as Schwartz functions
+    17 R3.ParabolicDefinitions | 
+    15 PrimaryMaterialDefect | The actual primary material-phase defect
+    15 HarmonicCovariance | Covariance of actual finite real harmonic fields
+    12 ComparatorSolution | Navier–Stokes Comparator submission: options (C) and (D)
+    11 NaturalCore | The physical natural core
+    10 R3.ComparisonFourierSetup | Fourier test expressions used in pressure recovery
+    10 PeriodizeLatticeCover | A nearest integer lattice point
+     9 ActualEndpointInputs | Endpoint inputs for the actual raw candidate stages
+     9 ComparatorTheorem | The full periodic corollary implies option (D)
+     9 MixedCandidateWitness | Retaining the actual mixed candidate and its consequences
+     8 ComparatorR3Theorem | The full whole-space theorem implies option (C)
+     5 ActualCarrierTransport | Binding the primitive carrier transport to the actual cycle parameters
+     3 OscillatoryCurl | Real oscillatory curl realization
+     3 FlatZeroExtension | Jointly smooth zero extension from locally uniform Gaussian bounds
+     2 GraphCalculus | Exact differential calculus on the auxiliary graph

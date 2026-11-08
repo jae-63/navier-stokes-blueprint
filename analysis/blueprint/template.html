@@ -1,0 +1,312 @@
+<meta charset="utf-8">
+<title>Navier–Stokes Blueprint</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a drafting-sheet page. Layered dependency graph on top (top = Clay statements, bottom = base flow), then the spine as a top-down catalogue grouped by proof layer. */
+:root {
+  --paper: #f5f7f9;
+  --sheet: #ffffff;
+  --ink: #17212b;
+  --muted: #5a6876;
+  --rule: #d6dde4;
+  --accent: #1f5fa8;
+  --edge: #9aa9b8;
+  --edge-hi: #1f5fa8;
+  --g0: #6b4fa0; --g1: #1f5fa8; --g2: #b0452f; --g3: #2f7d6b;
+  --g4: #a8741a; --g5: #3d6f2a; --g6: #a03c6e; --g7: #4a5a6a;
+  --display: "Newsreader", "Iowan Old Style", Georgia, serif;
+  --body: "Public Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --paper: #0f1720; --sheet: #16212c; --ink: #e3e9ef; --muted: #93a2b1; --rule: #2a3846;
+  --accent: #7fb2ec; --edge: #4b5d6f; --edge-hi: #7fb2ec;
+  --g0: #b39ddb; --g1: #7fb2ec; --g2: #ef8f78; --g3: #6cc4ad; --g4: #e2b45c; --g5: #9ccf80; --g6: #e48ab5; --g7: #a9b6c3;
+  color-scheme: dark } }
+:root[data-theme="dark"] {
+  --paper: #0f1720; --sheet: #16212c; --ink: #e3e9ef; --muted: #93a2b1; --rule: #2a3846;
+  --accent: #7fb2ec; --edge: #4b5d6f; --edge-hi: #7fb2ec;
+  --g0: #b39ddb; --g1: #7fb2ec; --g2: #ef8f78; --g3: #6cc4ad; --g4: #e2b45c; --g5: #9ccf80; --g6: #e48ab5; --g7: #a9b6c3;
+  color-scheme: dark }
+body { background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-block: 28px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+header { display: grid; gap: 10px; margin-bottom: 22px; }
+.eyebrow { font: 500 12px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+h1 { font: 600 clamp(30px, 5vw, 44px)/1.08 var(--display); margin: 0; text-wrap: balance; }
+.lede { max-width: 68ch; color: var(--muted); margin: 0; }
+.lede b { color: var(--ink); font-weight: 600; }
+.facts { display: flex; flex-wrap: wrap; gap: 6px 18px; font: 12.5px/1.4 var(--mono); color: var(--muted); }
+.facts span b { color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; }
+h2 { font: 600 24px/1.2 var(--display); margin: 0; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12.5px; color: var(--muted); }
+.legend button { all: unset; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; padding: 2px 4px; border-radius: 4px; }
+.legend button:focus-visible { outline: 2px solid var(--accent); }
+.legend button[aria-pressed="true"] { color: var(--ink); background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.sw { width: 10px; height: 10px; border-radius: 2px; flex: none; }
+.graphbox { background: var(--sheet); border: 1px solid var(--rule); border-radius: 6px; margin: 12px 0 8px; overflow-x: auto; position: relative;
+  background-image: linear-gradient(var(--rule) 1px, transparent 1px), linear-gradient(90deg, var(--rule) 1px, transparent 1px);
+  background-size: 24px 24px; background-position: -1px -1px; }
+.graphbox svg { display: block; }
+.graphbox .bg { fill: var(--sheet); opacity: .82; }
+.node rect { fill: var(--sheet); stroke-width: 1.4; }
+.node text { font: 500 11px var(--body); fill: var(--ink); pointer-events: none; }
+.node { cursor: pointer; }
+.node:focus { outline: none; }
+.node:focus-visible rect, .node.sel rect { stroke-width: 2.6; }
+.edge { fill: none; stroke: var(--edge); stroke-width: 1; opacity: .7; }
+.edge.hi { stroke: var(--edge-hi); stroke-width: 2; opacity: 1; }
+.dim { opacity: .18; }
+.hint { font-size: 12.5px; color: var(--muted); margin: 0 0 28px; }
+.layer { margin-top: 34px; display: grid; gap: 12px; }
+.layer-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; border-bottom: 1px solid var(--rule); padding-bottom: 6px; }
+.layer-head .n { font: 12px var(--mono); color: var(--muted); }
+.layer-head p { margin: 0; color: var(--muted); font-size: 13.5px; flex-basis: 100%; max-width: 75ch; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); gap: 12px; }
+.card { background: var(--sheet); border: 1px solid var(--rule); border-left: 3px solid var(--c); border-radius: 4px; padding: 12px 14px; display: grid; gap: 7px; min-width: 0; scroll-margin-top: 20px; }
+.card.sel { box-shadow: 0 0 0 2px var(--accent); }
+.card h3 { margin: 0; font: 600 17px/1.25 var(--display); display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+.card h3 .ref { font: 400 12px var(--mono); color: var(--muted); white-space: nowrap; }
+.stmt { margin: 0; font: 400 15px/1.45 var(--display); }
+.lean { font: 12px/1.4 var(--mono); color: var(--accent); overflow-wrap: anywhere; }
+.loc { font: 11.5px var(--mono); color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 12px; }
+.bar { height: 4px; background: var(--rule); border-radius: 2px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--c); }
+.deps { display: flex; flex-wrap: wrap; gap: 4px 6px; font-size: 12px; color: var(--muted); align-items: center; }
+.chip { all: unset; cursor: pointer; font-size: 12px; padding: 1px 7px; border: 1px solid var(--rule); border-radius: 10px; color: var(--ink); }
+.chip:hover, .chip:focus-visible { border-color: var(--accent); color: var(--accent); }
+footer { margin-top: 40px; border-top: 1px solid var(--rule); padding-top: 14px; font-size: 13px; color: var(--muted); display: grid; gap: 6px; max-width: 80ch; }
+code { font-family: var(--mono); font-size: .9em; }
+.twocol { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 14px; margin-bottom: 30px; }
+.note { background: var(--sheet); border: 1px solid var(--rule); border-radius: 6px; padding: 16px 18px; min-width: 0; display: grid; gap: 10px; align-content: start; }
+.note p, .note ul { margin: 0; max-width: 68ch; }
+.note ul { padding-left: 18px; display: grid; gap: 7px; }
+.own { display: grid; gap: 5px; font-size: 12.5px; }
+.own .r { display: grid; grid-template-columns: minmax(0, 13em) 1fr 4.2em; gap: 8px; align-items: center; }
+.own .r span:last-child { font: 12px var(--mono); text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); }
+.own .t { height: 8px; background: var(--rule); border-radius: 2px; overflow: hidden; }
+.own .t i { display: block; height: 100%; }
+@media print {
+  .graphbox { overflow: visible; background-image: none; }
+  .graphbox svg { width: 100%; height: auto; }
+  .card, .note, .layer-head { break-inside: avoid; }
+  .hint, .legend { display: none; }
+  section[aria-labelledby="g-h"], section[aria-labelledby="s-h"] { break-before: page; }
+}
+@media (prefers-reduced-motion: no-preference) { .card, .edge, .node { transition: opacity .15s, box-shadow .15s; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">openai/NavierStokesAndEuler · NavierStokes/ · commit f9e8bc5</div>
+    <h1>Navier–Stokes Blueprint</h1>
+    <p class="lede">The proof's spine as <b><span id="nnodes"></span> load-bearing declarations</b>, each with a one-line informal statement. Edges mean “is proved using”, after transitive reduction through the ~23,800 declarations in between. Read top to bottom: Clay statements, Theorem 1.1, then the construction down to the axisymmetric base flow.</p>
+    <div class="facts" id="facts"></div>
+  </header>
+
+  <section class="twocol" aria-label="Summary">
+    <div class="note">
+      <h2>Spine or sprawl?</h2>
+      <p><b>The top is a clean spine.</b> From the Clay statements down to the viscosity-1 candidate the proof is a short chain: scaling, periodization, and a classical uniqueness argument. These layers are under 5% of the code.</p>
+      <p><b>The one idea</b> (paper §2–3): a swirling, axisymmetric flow concentrates on a shrinking annulus with τ = 1 − t, and its velocity grows like τ<sup>−1/2−h</sup> while its energy stays bounded because h &lt; 1/6. The flow does not solve Navier–Stokes exactly. Oscillatory waves supply the missing stress. Then repeated corrections push the residual to zero at every order (σ<sub>j</sub> = 1/5 + j/10), and the leftover residual becomes the smooth force f.</p>
+      <p><b>Below that it sprawls.</b> The construction splits into five cooperating branches: base flow, leading waves, iteration, summation, and localization. About <span id="shared"></span> lines (<span id="sharedpct"></span>) are shared machinery that no single branch owns, spread across hundreds of modules. Ownership of the rest:</p>
+      <div id="own" class="own"></div>
+    </div>
+    <div class="note">
+      <h2>What Lean actually checks</h2>
+      <ul>
+        <li>The two root theorems restate DeepMind's <code>formal-conjectures</code> versions of Fefferman's (C) and (D) word for word. The challenge file imports only Mathlib, and the proof never imports it.</li>
+        <li>The witness has <b>zero initial velocity</b>. All the work is done by a smooth force f that is compactly supported in space and in time t &gt; 0, which the Clay text permits.</li>
+        <li>Blowup is <b>pointwise unbounded speed</b> as t ↑ 1 (<code>SpeedUnboundedAtOne</code>). The proof also shows the H³ norm diverges.</li>
+        <li>The excluded competitors on ℝ³ are any smooth global solutions with bounded energy, the same force, and zero initial data. No support or growth condition is imposed on them. On the torus, not even an energy bound is imposed.</li>
+        <li>The repository prints <code>#print axioms</code> for both roots. I did not re-run the build for this page.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section aria-labelledby="g-h">
+    <h2 id="g-h">Dependency graph</h2>
+    <div class="legend" id="legend" role="group" aria-label="Highlight a proof layer"></div>
+    <div class="graphbox"><svg id="graph" role="img" aria-label="Layered dependency graph of the blueprint nodes"></svg></div>
+    <p class="hint">Click a node to highlight what it uses (below) and what uses it (above), and jump to its entry. Click the background to clear.</p>
+  </section>
+
+  <section aria-labelledby="s-h">
+    <h2 id="s-h">The spine, top down</h2>
+    <div id="layers"></div>
+  </section>
+
+  <footer>
+    <div><b>How this was built.</b> Declarations and dependencies come from the ns-explorer extraction (<code>data/ns-cone.json</code>, Lean elaborated environment, proof and statement dependencies). Nodes were picked from the dominator tree of the two Clay theorems: each owns a large subproof or is a statement the rest is organized around. “Cone” is the number of source lines in the node's full transitive dependency set inside <code>NavierStokes</code>.</div>
+    <div><b>Caveats.</b> The informal statements are my paraphrase of each declaration's Lean signature and docstring, not machine-checked text. Paper references are approximate: the Lean comments cite an earlier draft's numbering, so the mapping to the published PDF's sections was done by content.</div>
+  </footer>
+</div>
+
+<script>
+const DATA = __DATA__;
+const GROUPS = ["Clay statements","Theorem 1.1 & corollary","No global solution","Localization & force","Summing the stages","Correction iteration","Leading waves (initial stage)","Axisymmetric base flow"];
+const GDESC = {
+  "Clay statements": "The two Millennium Prize breakdown alternatives, stated exactly as in the Comparator challenge file, and the adapters that reduce them to the paper's theorems.",
+  "Theorem 1.1 & corollary": "Theorem 1.1 at every viscosity by scaling from ν = 1; the torus corollary by compressing, time-shifting and periodizing the compact solution.",
+  "No global solution": "Why blowup of the candidate excludes a global solution: classical uniqueness forces any global competitor to coincide with the candidate before t = 1.",
+  "Localization & force": "Cutting the local fields off in space and time, checking the energy bound, and extending the residual past t = 1 as one smooth compactly supported force.",
+  "Summing the stages": "The infinite sum of correction stages with shrinking cutoffs: a schedule is chosen so the sum is smooth, its residual is flat at the singular point, and the velocity still blows up.",
+  "Correction iteration": "The induction: each correction cycle raises the residual decay exponent σ by 1/10, starting from σ₀ = 1/5.",
+  "Leading waves (initial stage)": "The primary oscillatory velocities whose averaged quadratic stress supplies the base flow's missing annular stress.",
+  "Axisymmetric base flow": "The concentrating swirling profile (E, U, Π) in similarity coordinates: its existence, the stress-cone certificate, and the all-order expansion near the axis."
+};
+const nodes = DATA.nodes;
+const byId = Object.fromEntries(nodes.map(n => [n.id, n]));
+const gi = g => GROUPS.indexOf(g);
+const users = Object.fromEntries(nodes.map(n => [n.id, []]));
+nodes.forEach(n => n.deps.forEach(d => users[d].push(n.id)));
+const maxCone = Math.max(...nodes.map(n => n.cone));
+const fmt = x => x.toLocaleString("en-US");
+
+document.getElementById("nnodes").textContent = nodes.length;
+document.getElementById("facts").innerHTML =
+  `<span><b>${nodes.length}</b> blueprint nodes</span><span><b>${nodes.reduce((a,n)=>a+n.deps.length,0)}</b> edges</span>` +
+  `<span><b>${fmt(DATA.totalDecls)}</b> declarations in the proof cone</span><span><b>${fmt(DATA.totalLines)}</b> lines</span>`;
+
+/* ---------- ownership ---------- */
+{
+  const O = DATA.ownership, tot = Object.values(O).reduce((a,b)=>a+b,0);
+  document.getElementById("shared").textContent = fmt(O["Shared machinery"]);
+  document.getElementById("sharedpct").textContent = Math.round(100*O["Shared machinery"]/tot) + "%";
+  const rowsO = Object.entries(O).sort((a,b)=>b[1]-a[1]);
+  document.getElementById("own").innerHTML = rowsO.map(([g,v]) => {
+    const i = gi(g), col = i >= 0 ? `var(--g${i})` : "var(--muted)";
+    return `<div class="r"><span>${g}</span><span class="t"><i style="width:${(100*v/rowsO[0][1]).toFixed(1)}%;background:${col}"></i></span><span>${(100*v/tot).toFixed(1)}%</span></div>`;
+  }).join("");
+}
+
+/* ---------- layered layout ---------- */
+const layer = {};
+function depth(id) { // longest path from a root
+  if (layer[id] !== undefined) return layer[id];
+  const us = users[id];
+  layer[id] = us.length ? 1 + Math.max(...us.map(depth)) : 0;
+  return layer[id];
+}
+nodes.forEach(n => depth(n.id));
+const L = Math.max(...Object.values(layer)) + 1;
+let rows = Array.from({length: L}, () => []);
+nodes.forEach(n => rows[layer[n.id]].push(n.id));
+rows.forEach(r => r.sort((a,b) => gi(byId[a].group) - gi(byId[b].group)));
+const pos = {};
+const setPos = () => rows.forEach(r => r.forEach((id,i) => pos[id] = i - (r.length-1)/2));
+setPos();
+for (let it = 0; it < 12; it++) {
+  const down = it % 2 === 0;
+  const seq = down ? rows.slice(1) : rows.slice(0,-1).reverse();
+  seq.forEach(r => {
+    const bc = id => { const nb = down ? users[id] : byId[id].deps; return nb.length ? nb.reduce((a,x)=>a+pos[x],0)/nb.length : pos[id]; };
+    r.sort((a,b) => bc(a) - bc(b));
+  });
+  setPos();
+}
+const NW = 150, NH = 30, HG = 18, VG = 30, PAD = 20;
+const maxRow = Math.max(...rows.map(r => r.length));
+const W = maxRow * (NW + HG) + PAD*2, H = L * (NH + VG) + PAD*2 - VG;
+const xy = {};
+rows.forEach((r, li) => r.forEach((id, i) => {
+  const x = W/2 + (i - (r.length-1)/2) * (NW + HG);
+  xy[id] = { x, y: PAD + li*(NH+VG) };
+}));
+
+const svg = document.getElementById("graph");
+svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+svg.setAttribute("width", W); svg.setAttribute("height", H);
+const NS = "http://www.w3.org/2000/svg";
+const el = (t, a, p) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); p && p.appendChild(e); return e; };
+el("rect", {x:0, y:0, width:W, height:H, class:"bg"}, svg).addEventListener("click", () => select(null));
+const gEdges = el("g", {}, svg), gNodes = el("g", {}, svg);
+const edgeEls = [];
+nodes.forEach(n => n.deps.forEach(d => {
+  const a = xy[n.id], b = xy[d];
+  const x1 = a.x, y1 = a.y + NH, x2 = b.x, y2 = b.y, my = (y1 + y2)/2;
+  const p = el("path", {d:`M${x1},${y1} C${x1},${my} ${x2},${my} ${x2},${y2}`, class:"edge"}, gEdges);
+  edgeEls.push({from:n.id, to:d, el:p});
+}));
+const nodeEls = {};
+const short = s => s.length > 22 ? s.slice(0, 21) + "…" : s;
+nodes.forEach(n => {
+  const {x, y} = xy[n.id];
+  const g = el("g", {class:"node", tabindex:"0", role:"button", "aria-label": n.label}, gNodes);
+  el("rect", {x:x-NW/2, y, width:NW, height:NH, rx:4, stroke:`var(--g${gi(n.group)})`}, g);
+  el("rect", {x:x-NW/2, y, width:4, height:NH, rx:1, fill:`var(--g${gi(n.group)})`, stroke:"none"}, g);
+  const t = el("text", {x:x+2, y:y+NH/2+4, "text-anchor":"middle"}, g); t.textContent = short(n.label);
+  el("title", {}, g).textContent = `${n.label}\n${n.stmt}`;
+  g.addEventListener("click", e => { e.stopPropagation(); select(n.id, true); });
+  g.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); select(n.id, true); } });
+  nodeEls[n.id] = g;
+});
+
+/* ---------- legend ---------- */
+const legend = document.getElementById("legend");
+let groupSel = null;
+GROUPS.forEach((g, i) => {
+  const b = document.createElement("button");
+  b.setAttribute("aria-pressed", "false");
+  b.innerHTML = `<span class="sw" style="background:var(--g${i})"></span>${g}`;
+  b.addEventListener("click", () => {
+    groupSel = groupSel === g ? null : g;
+    legend.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b && groupSel ? "true" : "false"));
+    select(null);
+    if (groupSel) Object.entries(nodeEls).forEach(([id, e]) => e.classList.toggle("dim", byId[id].group !== groupSel));
+  });
+  legend.appendChild(b);
+});
+
+/* ---------- cards ---------- */
+const layersEl = document.getElementById("layers");
+const cardEls = {};
+const order = [...nodes].sort((a,b) => gi(a.group) - gi(b.group) || layer[a.id] - layer[b.id]);
+GROUPS.forEach((g, i) => {
+  const items = order.filter(n => n.group === g);
+  const sec = document.createElement("section"); sec.className = "layer";
+  sec.innerHTML = `<div class="layer-head"><h2 style="font-size:20px"><span class="sw" style="display:inline-block;background:var(--g${i});margin-right:8px"></span>${g}</h2><span class="n">${items.length} nodes</span><p>${GDESC[g]}</p></div>`;
+  const cards = document.createElement("div"); cards.className = "cards";
+  items.forEach(n => {
+    const c = document.createElement("article"); c.className = "card"; c.id = "n-" + nodes.indexOf(n);
+    c.style.setProperty("--c", `var(--g${i})`);
+    const chips = ids => ids.map(d => `<button class="chip" data-id="${d}">${byId[d].label}</button>`).join("");
+    c.innerHTML =
+      `<h3><span>${n.label}</span><span class="ref">≈ ${n.paper}</span></h3>` +
+      `<p class="stmt">${n.stmt}</p>` +
+      `<div class="lean">${n.kind} ${n.name}</div>` +
+      `<div class="loc"><span>${n.file.replace("NavierStokes/","")}:${n.line}</span><span>cone ${fmt(n.cone)} lines</span></div>` +
+      `<div class="bar" title="share of the proof in this node's dependency cone"><i style="width:${(100*n.cone/maxCone).toFixed(1)}%"></i></div>` +
+      (n.deps.length ? `<div class="deps">uses ${chips(n.deps)}</div>` : `<div class="deps">uses no other blueprint node (leaf of this view)</div>`) +
+      (users[n.id].length ? `<div class="deps">used by ${chips(users[n.id])}</div>` : "");
+    cards.appendChild(c); cardEls[n.id] = c;
+  });
+  sec.appendChild(cards); layersEl.appendChild(sec);
+});
+layersEl.addEventListener("click", e => { const b = e.target.closest(".chip"); if (b) select(b.dataset.id, true); });
+
+/* ---------- selection ---------- */
+function closure(id, next) { const s = new Set([id]), st = [id]; while (st.length) next(st.pop()).forEach(x => { if (!s.has(x)) { s.add(x); st.push(x); } }); return s; }
+function select(id, scroll) {
+  Object.values(nodeEls).forEach(e => e.classList.remove("sel", "dim"));
+  Object.values(cardEls).forEach(e => e.classList.remove("sel"));
+  edgeEls.forEach(e => e.el.classList.remove("hi", "dim"));
+  if (!id) return;
+  groupSel = null; legend.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", "false"));
+  const down = closure(id, x => byId[x].deps), up = closure(id, x => users[x]);
+  const keep = new Set([...down, ...up]);
+  Object.entries(nodeEls).forEach(([k, e]) => e.classList.toggle("dim", !keep.has(k)));
+  nodeEls[id].classList.add("sel"); cardEls[id].classList.add("sel");
+  edgeEls.forEach(e => {
+    const on = (down.has(e.from) && down.has(e.to)) || (up.has(e.from) && up.has(e.to));
+    e.el.classList.toggle("hi", on); e.el.classList.toggle("dim", !on);
+  });
+  if (scroll) {
+    const box = svg.parentElement, x = xy[id].x;
+    box.scrollTo({ left: Math.max(0, x - box.clientWidth/2), behavior: "smooth" });
+    cardEls[id].scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "nearest" });
+  }
+}
+</script>
