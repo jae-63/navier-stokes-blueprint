@@ -50,6 +50,10 @@ the Navier–Stokes formalization.
   solutions with the same force and data (with bounded energy on ℝ³; on the torus not
   even that).
 
+## Next steps
+
+The plan for a refactored Lean proof is in [ROADMAP.md](ROADMAP.md).
+
 ## Caveats
 
 - The informal statements were written by an AI model (Claude) from each
